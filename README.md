@@ -11,4 +11,4 @@ Map with bounties and oracles mechanism.
 
 ## Demo
 
-![alt text](https://raw.githubusercontent.com/bneiluj/flyingcarpet-dashboard/master/public/assets/screenshot.png)
+![alt text](https://i.imgur.com/eypk9VI.jpg)
