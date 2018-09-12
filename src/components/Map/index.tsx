@@ -1,6 +1,8 @@
 import * as React from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
+import { MapEvent } from 'react-mapbox-gl/lib/map-events';
 
+// TODO to be injected by dev or prod on script
 const Map = ReactMapboxGl({
   accessToken: 'pk.eyJ1IjoianVsaWVuYm91dGVsb3VwIiwiYSI6ImNqbGdka2VzazBhODQzcG8wczU0ZnZsMWMifQ.3b2k0gS37rmqa2t5N3yBiA'
 });
@@ -17,14 +19,26 @@ const styles = {
   } as React.CSSProperties
 };
 
-class BountyMap extends React.Component {
+
+export interface IProps {
+  center?: number[];
+  mapInit?: MapEvent;
+  zoom?: [number];
+}
+
+class BountyMap extends React.Component<IProps> {
   public render() {
+    const { center, mapInit, zoom } = this.props;
+
     return (
       <div className="app-wrapper">
         <div className="d-flex justify-content-center">
           <Map
+            center={center}
             containerStyle={styles.map}
-            style={mapStyle}/>
+            onStyleLoad={mapInit}
+            style={mapStyle}
+            zoom={zoom}/>
         </div>
       </div>
     )

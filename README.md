@@ -11,6 +11,4 @@ Map with bounties and oracles mechanism.
 
 ## Demo
 
-![alt text](https://raw.githubusercontent.com/username/projectname/master/path/to/img.png)
-
-/Users/julien/Projects/Flyingcarpet/tmp/flyingcarpet-physical-heatmap-typescript/public/assets/screenshot.png
+![alt text](https://i.imgur.com/eypk9VI.jpg)
