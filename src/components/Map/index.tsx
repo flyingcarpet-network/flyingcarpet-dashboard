@@ -20,11 +20,13 @@ const styles = {
 class BountyMap extends React.Component {
   public render() {
     return (
-      <Map
-        containerStyle={styles.map}
-        style={mapStyle}>
-      <div>Test</div>
-      </Map>
+      <div className="app-wrapper">
+        <div className="d-flex justify-content-center">
+          <Map
+            containerStyle={styles.map}
+            style={mapStyle}/>
+        </div>
+      </div>
     )
   }
 }
