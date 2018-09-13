@@ -5,7 +5,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import './App.css';
-import Main from './components/main';
+import Main from './containers/main';
 import rootReducer from './reducers';
 
 const middlewares: any[] = [ thunk ];

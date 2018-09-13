@@ -3,6 +3,10 @@
 # dependencies
 /node_modules
 
+# public
+/public/styles
+/public/vendors
+
 # testing
 /coverage
 

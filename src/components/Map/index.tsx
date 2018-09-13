@@ -31,14 +31,18 @@ class BountyMap extends React.Component<IProps> {
     const { center, mapInit, zoom } = this.props;
 
     return (
-      <Map
-        center={center}
-        containerStyle={styles.map}
-        onStyleLoad={mapInit}
-        style={mapStyle}
-        zoom={zoom}>
-      <div>Test</div>
-      </Map>
+      <div className="app-wrapper">
+          <div className="d-flex justify-content-center">
+            <div className="row">
+                  <Map
+                    center={center}
+                    containerStyle={styles.map}
+                    onStyleLoad={mapInit}
+                    style={mapStyle}
+                    zoom={zoom}/>
+            </div>
+        </div>
+      </div>
     )
   }
 }
