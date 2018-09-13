@@ -1,10 +1,10 @@
 import * as React from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { MapEvent } from 'react-mapbox-gl/lib/map-events';
+import { MAPBOX_ACCESS_TOKEN } from '../constants';
 
-// TODO to be injected by dev or prod on script
 const Map = ReactMapboxGl({
-  accessToken: 'pk.eyJ1IjoianVsaWVuYm91dGVsb3VwIiwiYSI6ImNqbGdka2VzazBhODQzcG8wczU0ZnZsMWMifQ.3b2k0gS37rmqa2t5N3yBiA'
+  accessToken: MAPBOX_ACCESS_TOKEN
 });
 
 const mapStyle = 'mapbox://styles/mapbox/dark-v9';
