@@ -4,9 +4,6 @@ import { connect } from 'react-redux';
 import Footer from './../components/Footer';
 import Header from './../components/Header/index';
 import BountyMap from './../components/Map';
-import './../styles/app-rtl.scss';
-import './../styles/app.scss';
-import './../styles/bootstrap.scss';
 
 class Main extends React.Component {
 
