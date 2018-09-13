@@ -32,13 +32,15 @@ class BountyMap extends React.Component<IProps> {
 
     return (
       <div className="app-wrapper">
-        <div className="d-flex justify-content-center">
-          <Map
-            center={center}
-            containerStyle={styles.map}
-            onStyleLoad={mapInit}
-            style={mapStyle}
-            zoom={zoom}/>
+          <div className="d-flex justify-content-center">
+            <div className="row">
+                  <Map
+                    center={center}
+                    containerStyle={styles.map}
+                    onStyleLoad={mapInit}
+                    style={mapStyle}
+                    zoom={zoom}/>
+            </div>
         </div>
       </div>
     )
