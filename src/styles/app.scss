@@ -65,6 +65,23 @@ Version        : 1.0
         03. Mails Module Styles
         04. Contact Module Styles
         05. Calendar Module Style
+    H. Color Theme
+        01. Theme Indigo Styles
+        02. Theme Cyan Styles
+        03. Theme Amber Styles
+        04. Theme Deep Orange Styles
+        05. Theme Pink Styles
+        06. Theme Blue Styles
+        07. Theme Deep Purple Styles
+        08. Theme Green Styles
+        09. Theme Dark Indigo Styles
+        10. Theme Dark Cyan Styles
+        11. Theme Dark Amber Styles
+        12. Theme Dark Deep Orange Styles
+        13. Theme Dark Pink Styles
+        14. Theme Dark Blue Styles
+        15. Theme Dark Deep Purple Styles
+        16. Theme Dark Green Styles
   =============================================================*/
 //Custom Variables
 @import "global/_global-dir";
@@ -75,3 +92,4 @@ Version        : 1.0
 @import "pages/_pages-dir";
 @import "slider/owl-carousel";
 @import "module/_module-dir";
+@import "colorTheme/_color-theme-dir";
