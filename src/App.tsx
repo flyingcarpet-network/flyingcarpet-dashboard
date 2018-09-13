@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import Web3Provider from 'react-web3-provider';
 import { Route, Switch } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
+import Web3Provider from 'react-web3-provider';
 import './App.css';
 import Main from './containers/main';
 import configureStore, { history } from './store';
