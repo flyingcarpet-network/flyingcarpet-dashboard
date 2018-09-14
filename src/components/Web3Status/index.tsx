@@ -22,15 +22,22 @@ class Header extends React.Component<IProps> {
       .catch(() => setIsAnyUnlockedAccount(false));
   }
   public render() {
-    const { web3State, isAnyUnlockedAccount } = this.props;
-
     return (
       <div>
-        {(!web3State.isConnected || web3State.error || !isAnyUnlockedAccount) &&
-          <div>- Please ensure that MetaMask is installed and logged in -</div>
-        }
+        {this.determineWeb3StatusMessage()}
       </div>
     );
+  }
+  private determineWeb3StatusMessage() {
+    const { web3State, isAnyUnlockedAccount } = this.props;
+
+    const noWeb3Failure = 'Please use MetaMask';
+    const noUnlockedAccountFailure = 'Please unlock your MetaMask account';
+    const success = 'Connected to MetaMask';
+
+    if (!web3State.isConnected || web3State.error) { return noWeb3Failure; }
+    if (!isAnyUnlockedAccount) { return noUnlockedAccountFailure; }
+    return success;
   }
 }
 
