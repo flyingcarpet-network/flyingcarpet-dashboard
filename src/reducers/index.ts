@@ -1,10 +1,12 @@
-import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
-import TcroReducer from './tcroReducer';
+import { combineReducers } from 'redux';
 import ModelReducer from './modelReducer';
+import TcroReducer from './tcroReducer';
+import Web3Reducer from './web3Reducer';
 
 export default combineReducers ({
   models: ModelReducer,
   routing: routerReducer,
-  tcro: TcroReducer
+  tcro: TcroReducer,
+  web3: Web3Reducer
 });
