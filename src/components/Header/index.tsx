@@ -14,7 +14,7 @@ class Header extends React.Component {
                       </div>
                       <div className="app-logo pointer d-none d-md-block">
                           {/* TODO : replace placeholder by FC logo with correct route from assets/images/FC...*/}
-                          <img className="d-none d-lg-block" alt='...' src='http://via.placeholder.com/105x36'/>
+                          <img className="d-none d-lg-block" alt='...' src='/assets/images/logo.png'/>
                           <img className="d-block d-lg-none mr-3" alt='...'
                                src='http://via.placeholder.com/32x32'/>
                       </div>
