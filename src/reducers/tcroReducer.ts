@@ -1,10 +1,16 @@
+import * as types from '../actions/tcroActions-types';
+
 const INITIAL_STATE = {
-  tcro: []
+  bounties: []
 };
 
-export default function models(state = INITIAL_STATE.tcro, action) {
+export default function tcro(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case "FETCH_TCRO":
+    case types.SET_BOUNTIES:
+      return {
+      	...state,
+      	bounties: action.bounties
+      };
     default:
       return state;
   }
