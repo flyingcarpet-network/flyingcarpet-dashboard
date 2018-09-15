@@ -81,23 +81,19 @@ class BountyMap extends React.Component<IProps> {
 
     return (
       <div className="app-wrapper">
-          <div className="d-flex justify-content-center">
-            <div className="row">
-              <Map
-                center={center}
-                containerStyle={styles.map}
-                onStyleLoad={mapInit}
-                style={mapStyle}
-                zoom={zoom}
-              >
-                <Layer type="heatmap" paint={layerPaint as any}>
-                  {bounties.map((bounty: any, index: number) => (
-                    <Feature key={index} coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]} />
-                  ))}
-                </Layer>
-              </Map>
-            </div>
-        </div>
+        <Map
+          center={center}
+          containerStyle={styles.map}
+          onStyleLoad={mapInit}
+          style={mapStyle}
+          zoom={zoom}
+        >
+          <Layer type="heatmap" paint={layerPaint as any}>
+            {bounties.map((bounty: any, index: number) => (
+              <Feature key={index} coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]} />
+            ))}
+          </Layer>
+        </Map>
       </div>
     )
   }
