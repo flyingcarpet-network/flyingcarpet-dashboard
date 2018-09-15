@@ -3,6 +3,7 @@ import CurrentNetwork from './../CurrentNetwork';
 import NTNBalance from './../NTNBalance';
 import SearchBox from './../SearchBox';
 import Web3Status from './../Web3Status';
+import Menu from "./Menu";
 
 class Header extends React.Component {
   public render() {
@@ -23,6 +24,8 @@ class Header extends React.Component {
           </div>
 
           <SearchBox />
+
+          <Menu/>
 
           <ul className="header-notifications list-inline ml-auto">
               <li className="d-inline-block d-lg-none list-inline-item">
