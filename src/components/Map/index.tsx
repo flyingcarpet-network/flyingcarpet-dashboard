@@ -1,7 +1,8 @@
 import * as React from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { MapEvent } from 'react-mapbox-gl/lib/map-events';
-import { MAPBOX_ACCESS_TOKEN } from '../constants';
+import { connect } from 'react-redux';
+import { MAPBOX_ACCESS_TOKEN } from '../../constants';
 
 const Map = ReactMapboxGl({
   accessToken: MAPBOX_ACCESS_TOKEN
@@ -34,12 +35,12 @@ class BountyMap extends React.Component<IProps> {
       <div className="app-wrapper">
           <div className="d-flex justify-content-center">
             <div className="row">
-                  <Map
-                    center={center}
-                    containerStyle={styles.map}
-                    onStyleLoad={mapInit}
-                    style={mapStyle}
-                    zoom={zoom}/>
+              <Map
+                center={center}
+                containerStyle={styles.map}
+                onStyleLoad={mapInit}
+                style={mapStyle}
+                zoom={zoom}/>
             </div>
         </div>
       </div>
@@ -47,4 +48,9 @@ class BountyMap extends React.Component<IProps> {
   }
 }
 
-export default BountyMap;
+export default connect(
+  state => ({
+    center: state.map.center
+  }),
+  null
+)(BountyMap);

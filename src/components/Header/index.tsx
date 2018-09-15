@@ -58,7 +58,7 @@ class Header extends React.Component<IProps> {
               </div>
           </div>
 
-          <SearchBox styleName="d-none d-lg-block"/>
+          <SearchBox />
 
           {(!web3State.isConnected || web3State.error || !isAnyUnlockedAccount) &&
             <div>- Please ensure that MetaMask is installed and logged in -</div>
