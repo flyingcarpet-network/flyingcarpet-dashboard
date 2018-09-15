@@ -115,16 +115,18 @@ export function contributeToBounty(web3: any, bountyID: number, amountToken: num
     const bountiesContractAddress = web3.utils.toChecksumAddress(contractAddresses.StandardBounties);
     const bountiesContract = new web3.eth.Contract(StandardBountiesJSON.abi, bountiesContractAddress);
 
-    console.log(erc20Contract);
-    console.log(bountiesContractAddress);
-    console.log(amountToken);
+    // Get the default (active) MetaMask account address
+    return getDefaultAccount(web3).then((accountAddr: any) => {
+      // Get the amount of token to contribute approved
+      return erc20Contract.methods.approve(bountiesContractAddress, amountToken).send({ from: accountAddr }).then((success: boolean) => {
+        if (!success) { return reject('Error getting the token approved.'); }
 
-    // Get the amount of token to contribute approved
-    return erc20Contract.methods.approve(bountiesContractAddress, amountToken).call().then((success: boolean) => {
-      if (!success) { return reject('Error getting the token approved.'); }
-
-      // Contribute to bounty
-      return bountiesContract.methods.contribute(bountyID, amountToken).call().then(resolve).catch(reject);
+        // Get current gas price
+        return web3.eth.getGasPrice().then((price: number) => {
+          // Contribute to bounty
+          return bountiesContract.methods.contribute(bountyID, amountToken).send({ from: accountAddr, gasPrice: price, gas: 100000 }).then(resolve).catch(reject);
+        }).catch(reject);
+      }).catch(reject);
     }).catch(reject);
   });
 }
