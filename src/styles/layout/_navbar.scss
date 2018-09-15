@@ -85,12 +85,19 @@
     &.active > a {
       color: $app-primary;
     }
+    & > div a {
+      padding: 23px 0;
+    }
+
+    &.active > div a {
+      color: $app-primary;
+    }
   }
 
-  & li.nav-item:hover > a,
-  & li.nav-item:focus > a,
-  & li.nav-item > a:hover,
-  & li.nav-item > a:focus {
+  & li.nav-item:hover > div a,
+  & li.nav-item:focus > div a,
+  & li.nav-item > div a:hover,
+  & li.nav-item > div a:focus {
     color: $app-primary;
   }
 
