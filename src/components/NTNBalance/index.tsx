@@ -28,7 +28,8 @@ class Header extends React.Component<IProps> {
 
     return (
       <div>
-        <div>- NTN Balance: {nitrogenBalance} -</div>
+        <i className="zmdi zmdi-gas-station zmdi-hc-fw"/>
+        <span className="badge badge-secondary"><span>{nitrogenBalance} NTN</span></span>
       </div>
     );
   }

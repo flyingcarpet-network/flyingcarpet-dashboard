@@ -12,6 +12,7 @@ export interface IProps {
 }
 
 class Header extends React.Component<IProps> {
+
   public componentDidMount() {
     const { web3, setNetworkName } = this.props;
 
@@ -20,12 +21,13 @@ class Header extends React.Component<IProps> {
       .then((name: string) => setNetworkName(name))
       .catch((name: string) => setNetworkName(''));
   }
+
   public render() {
     const { networkName } = this.props;
 
     return (
       <div>
-        <div>- Current Network: {networkName} -</div>
+        <span className="badge badge-success">Network: {networkName}</span>
       </div>
     );
   }

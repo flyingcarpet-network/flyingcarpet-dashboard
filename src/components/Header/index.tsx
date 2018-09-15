@@ -24,9 +24,17 @@ class Header extends React.Component {
 
           <SearchBox />
 
-          <Web3Status />
-          <CurrentNetwork />
-          <NTNBalance />
+          <ul className="header-notifications list-inline ml-auto">
+              <li className="d-inline-block d-lg-none list-inline-item">
+                <Web3Status />
+              </li>
+              <li className="list-inline-item user-nav">
+                <CurrentNetwork />
+              </li>
+              <li className="list-inline-item user-nav">
+                <NTNBalance />
+              </li>
+          </ul>
         </div>
       </div>
     );
