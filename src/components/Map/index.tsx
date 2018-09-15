@@ -37,8 +37,8 @@ export interface IProps {
 const layerPaint = {
   'heatmap-weight': {
     property: 'priceIndicator',
-    type: 'exponential',
-    stops: [[0, 0], [5, 2]]
+    stops: [[0, 0], [5, 2]],
+    type: 'exponential'
   },
   // Increase the heatmap color weight weight by zoom level
   // heatmap-ntensity is a multiplier on top of heatmap-weight
@@ -106,7 +106,8 @@ class BountyMap extends React.Component<IProps> {
 export default compose<any>(
   connect(
     state => ({
-      bounties: state.tcro.bounties
+      bounties: state.tcro.bounties,
+      center: state.map.center
     }),
     dispatch => ({
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch)

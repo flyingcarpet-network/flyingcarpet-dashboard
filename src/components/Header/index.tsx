@@ -22,7 +22,7 @@ class Header extends React.Component {
               </div>
           </div>
 
-          <SearchBox styleName="d-none d-lg-block"/>
+          <SearchBox />
 
           <Web3Status />
           <CurrentNetwork />
