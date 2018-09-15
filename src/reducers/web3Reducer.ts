@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   nitrogenBalance: 0
 };
 
-export default function models(state = INITIAL_STATE, action) {
+export default function web3(state = INITIAL_STATE, action) {
   switch (action.type) {
     case types.SET_IS_ANY_UNLOCKED_ACCOUNT:
       return {
