@@ -3,7 +3,7 @@ import mbxGeocoding from '@mapbox/mapbox-sdk/services/geocoding';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { MAPBOX_ACCESS_TOKEN } from '../constants';
-import BountyMap from './map';
+import BountyMap from './Map';
 import Search from './search';
 
 const baseClient = mbxClient({ accessToken: MAPBOX_ACCESS_TOKEN });
