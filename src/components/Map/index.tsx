@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ReactMapboxGl, { Feature, Layer } from 'react-mapbox-gl';
+import ReactMapboxGl, { Feature, Layer, Marker } from 'react-mapbox-gl';
 import { MapEvent } from 'react-mapbox-gl/lib/map-events';
 import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
@@ -92,14 +92,33 @@ class BountyMap extends React.Component<IProps> {
               >
                 <Layer type="heatmap" paint={layerPaint as any}>
                   {bounties.map((bounty: any, index: number) => (
-                    <Feature key={index} coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]} />
+                    <Feature
+                      key={index}
+                      coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
+                      onClick={this.contribute10NTNToBounty.bind(this, bounty.bountyID)}
+                    />
                   ))}
                 </Layer>
+                <div>
+                  {bounties.map((bounty: any, index: number) => (
+                    <Marker
+                      key={index}
+                      coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
+                      onClick={this.contribute10NTNToBounty.bind(this, bounty.bountyID)}
+                    >
+                      <img alt="" src="https://www.mapbox.com/help/img/interactive-tools/custom_marker.png" />
+                    </Marker>
+                  ))}
+                </div>
               </Map>
             </div>
         </div>
       </div>
     )
+  }
+  public contribute10NTNToBounty = (bountyID) => {
+    const { web3 } = this.props;
+    Web3Utils.contributeToBounty(web3, bountyID, 10);
   }
 }
 
