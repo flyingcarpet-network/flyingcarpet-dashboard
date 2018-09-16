@@ -25,7 +25,7 @@ class Header extends React.Component {
 
           <SearchBox />
 
-          <Menu/>
+          <div><Menu/></div>
 
           <ul className="header-notifications list-inline ml-auto">
               <li className="d-inline-block d-lg-none list-inline-item">

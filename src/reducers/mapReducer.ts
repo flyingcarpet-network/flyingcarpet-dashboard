@@ -4,7 +4,11 @@ const INITIAL_STATE = {
   // TO-DO: These are London coordinates, the code should allow an empty
   // 'currentPlace' so that it defaults to the user's inferred location
   center: [-0.1275, 51.50722],
-  searchTerm: ''
+  searchTerm: '',
+  // For bounty contribution dialog modal
+  bountyStakeAmount: 0, // The amount of NTN token to stake
+  selectedBountyToStake: 0, // The ID of the selected bounty (when the staking modal is opened)
+  bountyStakedSuccessfully: false // Set to true right after a bounty has just been staked, then reset to false
 };
 
 export default function models(state = INITIAL_STATE, action) {
@@ -18,6 +22,21 @@ export default function models(state = INITIAL_STATE, action) {
       return {
         ...state,
         searchTerm: action.searchTerm
+      };
+    case types.SET_BOUNTY_STAKE_AMOUNT:
+      return {
+        ...state,
+        bountyStakeAmount: action.bountyStakeAmount
+      };
+    case types.SET_SELECTED_BOUNTY_TO_STAKE:
+      return {
+        ...state,
+        selectedBountyToStake: action.selectedBountyToStake
+      };
+    case types.TOGGLE_BOUNTY_STAKED_SUCCESSFULLY:
+      return {
+        ...state,
+        bountyStakedSuccessfully: !state.bountyStakedSuccessfully
       };
     default:
       return state;
