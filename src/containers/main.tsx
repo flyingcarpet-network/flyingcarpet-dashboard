@@ -25,10 +25,23 @@ class Main extends React.Component {
           </div>
           <main className="app-main-content-wrapper">
             <div className="app-main-content">
-              <BountyCreationPanel />
-              <BountyMap />
-              <Footer />
+              <div className="app-wrapper">
+                <div>
+                  <div className="jr-entry-header">
+                      <h3 className="entry-heading">Dashboard</h3>
+                  </div>
+                  <div className="row mb-md-4">
+                    <div className="col-md-6 col-12">
+                      <BountyCreationPanel />
+                    </div>
+                    <div className="col-md-6 col-12">
+                      <BountyMap />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+            <Footer/>
           </main>
         </div>
       </div>
