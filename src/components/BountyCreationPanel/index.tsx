@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
 import { compose } from 'redux';
 import { change } from 'redux-form';
+import * as Web3Utils from '../../utils/web3-utils';
 import Form from './Form';
 
 export interface IProps {
+  web3: any;
   handleSubmit: () => any;
   mapClickLocation: {lat: number, lng: number};
   formData: any;
@@ -46,7 +48,9 @@ class BountyCreationPanel extends React.Component<IProps> {
     return Geohash.encode(mapClickLocation.lat, mapClickLocation.lng);
   }
   private formSubmit = values => {
-    console.log(values);
+    const { web3 } = this.props;
+
+    return Web3Utils.submitBounty(web3, values).then(console.log).catch(console.error);
   }
 }
 
