@@ -9,7 +9,9 @@ const INITIAL_STATE = {
   // For bounty contribution dialog modal
   bountyStakeAmount: 0, // The amount of NTN token to stake
   selectedBountyToStake: 0, // The ID of the selected bounty (when the staking modal is opened)
-  bountyStakedSuccessfully: false // Set to true right after a bounty has just been staked, then reset to false
+  // TODO: These two flags (below) should be abstracted into their own reducers
+  bountyStakedSuccessfully: false, // Set to true right after a bounty has just been staked, then reset to false
+  bountySubmittedSuccessfully: false // Set to true right after a bounty has just been added, then reset to false
 };
 
 export default function models(state = INITIAL_STATE, action) {
@@ -43,6 +45,11 @@ export default function models(state = INITIAL_STATE, action) {
       return {
         ...state,
         bountyStakedSuccessfully: !state.bountyStakedSuccessfully
+      };
+    case types.TOGGLE_BOUNTY_SUBMISSION_SUCCESSFULLY:
+      return {
+        ...state,
+        bountySubmittedSuccessfully: !state.bountySubmittedSuccessfully
       };
     default:
       return state;

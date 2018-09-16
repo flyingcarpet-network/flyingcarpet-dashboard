@@ -2,8 +2,9 @@ import Geohash from 'latlon-geohash';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
-import { compose } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { change } from 'redux-form';
+import * as mapActions from '../../actions/mapActions';
 import * as Web3Utils from '../../utils/web3-utils';
 import Form from './Form';
 
@@ -13,6 +14,8 @@ export interface IProps {
   mapClickLocation: {lat: number, lng: number};
   formData: any;
   setGeohash: (newGeohash: string) => any;
+  toggleBountySubmissionSuccessfully: () => any;
+  bountySubmittedSuccessfully: boolean;
 }
 
 class BountyCreationPanel extends React.Component<IProps> {
@@ -21,7 +24,7 @@ class BountyCreationPanel extends React.Component<IProps> {
 
     let geohashInputValue = '';
     // Only access current geohash if it is in fact set (not undefined)
-    if (formData.values && formData.values.geohash) {
+    if (formData && formData.values && formData.values.geohash) {
       geohashInputValue = formData.values.geohash;
     }
 
@@ -35,9 +38,16 @@ class BountyCreationPanel extends React.Component<IProps> {
     }
   }
   public render() {
+    const { bountySubmittedSuccessfully } = this.props;
+
     return (
       <div style={{position: "fixed", left: 0, top: 0, bottom: 0, width: 200, paddingTop: 100, backgroundColor: "grey", zIndex: 10}}>
-        <Form onSubmit={this.formSubmit} />
+        {(!bountySubmittedSuccessfully) &&
+          <Form onSubmit={this.formSubmit} />
+        }
+        {bountySubmittedSuccessfully &&
+          <div>Bounty successfully submitted to the TCRO!</div>
+        }
       </div>
     );
   }
@@ -48,9 +58,15 @@ class BountyCreationPanel extends React.Component<IProps> {
     return Geohash.encode(mapClickLocation.lat, mapClickLocation.lng);
   }
   private formSubmit = values => {
-    const { web3 } = this.props;
+    const { web3, toggleBountySubmissionSuccessfully } = this.props;
 
-    return Web3Utils.submitBounty(web3, values).then(console.log).catch(console.error);
+    // TODO: Save/return the resulting transaction hash from successful transactions
+    return Web3Utils.submitBounty(web3, values).then(() => {
+      // Show sucess message
+      toggleBountySubmissionSuccessfully();
+      // Switch back to creation dialog in 10 seconds
+      setTimeout(toggleBountySubmissionSuccessfully, 10000);
+    }).catch(console.error);
   }
 }
 
@@ -58,9 +74,11 @@ export default compose<any>(
   connect(
     state => ({
       mapClickLocation: state.map.mapClickLocation,
-      formData: state.form.bountyCreationPanel
+      formData: state.form.bountyCreationPanel,
+      bountySubmittedSuccessfully: state.map.bountySubmittedSuccessfully
     }),
     dispatch => ({
+      toggleBountySubmissionSuccessfully: bindActionCreators(mapActions.toggleBountySubmissionSuccessfully, dispatch),
       // Dispatches redux-form action
       setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash))
     })

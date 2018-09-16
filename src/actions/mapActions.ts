@@ -40,3 +40,9 @@ export const toggleBountyStakedSuccessfully = () => (
     type: types.TOGGLE_BOUNTY_STAKED_SUCCESSFULLY
   }
 );
+
+export const toggleBountySubmissionSuccessfully = () => (
+  {
+    type: types.TOGGLE_BOUNTY_SUBMISSION_SUCCESSFULLY
+  }
+);
