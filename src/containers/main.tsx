@@ -18,15 +18,18 @@ class Main extends React.Component {
       <div className="app-main">
         <div className="app-container fixed-drawer">
           <div className="app-main-container">
-            <div className="app-header">
-              <Header/>
-            </div>
+              <div className="app-header">
+                <Header/>
+              </div>
+              <main className="app-main-content-wrapper">
+                <div className="app-main-content">
+                  <div className="app-wrapper">
+                  <BountyMap/>
+                  </div>
+                </div>
+                <Footer/>
+              </main>
           </div>
-          <main className="app-main-content-wrapper">
-            <div className="app-main-content" />
-              <BountyMap/>
-              <Footer/>
-          </main>
         </div>
       </div>
     );
