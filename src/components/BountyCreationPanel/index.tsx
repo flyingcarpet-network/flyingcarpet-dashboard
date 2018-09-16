@@ -2,9 +2,9 @@ import Geohash from 'latlon-geohash';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
-import { bindActionCreators, compose } from 'redux';
-import { change, Field, reduxForm } from 'redux-form';
-import * as tcroActions from '../../actions/tcroActions';
+import { compose } from 'redux';
+import { change } from 'redux-form';
+import Form from './Form';
 
 export interface IProps {
   handleSubmit: () => any;
@@ -13,7 +13,7 @@ export interface IProps {
   setGeohash: (newGeohash: string) => any;
 }
 
-class BountyMap extends React.Component<IProps> {
+class BountyCreationPanel extends React.Component<IProps> {
   public componentDidUpdate() {
     const { formData, setGeohash } = this.props;
 
@@ -33,45 +33,11 @@ class BountyMap extends React.Component<IProps> {
     }
   }
   public render() {
-    const { handleSubmit } = this.props;
-
     return (
       <div style={{position: "fixed", left: 0, top: 0, bottom: 0, width: 200, paddingTop: 100, backgroundColor: "grey", zIndex: 10}}>
-        <form onSubmit={handleSubmit}>
-          <Field
-            name="geohash"
-            component="input"
-            type="string"
-            value={this.getGeohash}
-            placeholder="Click The Map"
-          />
-          <br /><br />
-          <Field
-            name="dataCollectionRadius"
-            component="input"
-            type="number"
-            placeholder="Data Collection Radius"
-            parse={this.parseNumber}
-          />
-          <br /><br />
-          <Field name="useType" component="select">
-            <option>- Use Type -</option>
-            <option value="rooftop">Rooftop</option>
-            <option value="land">Land</option>
-            <option value="forest">Forest</option>
-          </Field>
-          <br /><br />
-          <Field name="collectionType" component="select">
-            <option>- Collection Type -</option>
-            <option value="rooftop">Drone</option>
-            <option value="satellite">Satellite</option>
-          </Field>
-        </form>
+        <Form onSubmit={this.formSubmit} />
       </div>
-    )
-  }
-  private parseNumber(value: any) {
-    return Number(value);
+    );
   }
   private getGeohash = () => {
     const { mapClickLocation } = this.props;
@@ -79,24 +45,21 @@ class BountyMap extends React.Component<IProps> {
     if (!mapClickLocation.lat || !mapClickLocation.lng) { return ''; }
     return Geohash.encode(mapClickLocation.lat, mapClickLocation.lng);
   }
+  private formSubmit = values => {
+    console.log(values);
+  }
 }
 
 export default compose<any>(
   connect(
     state => ({
-      bounties: state.tcro.bounties,
-      center: state.map.center,
       mapClickLocation: state.map.mapClickLocation,
       formData: state.form.bountyCreationPanel
     }),
     dispatch => ({
-      setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
       // Dispatches redux-form action
       setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash))
     })
   ),
-  reduxForm({
-    form: 'bountyCreationPanel'
-  }),
   withWeb3
-)(BountyMap);
+)(BountyCreationPanel);
