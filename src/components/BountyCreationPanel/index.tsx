@@ -41,14 +41,13 @@ class BountyCreationPanel extends React.Component<IProps> {
     const { bountySubmittedSuccessfully } = this.props;
 
     return (
-      // <div style={{position: "fixed", zIndex: 10,left: 0, top: 150}}>
       <div>
-        {(!bountySubmittedSuccessfully) &&
-          <Form onSubmit={this.formSubmit} />
-        }
-        {bountySubmittedSuccessfully &&
-          <div>Bounty successfully submitted to the TCRO!</div>
-        }
+          {(!bountySubmittedSuccessfully) &&
+            <Form onSubmit={this.formSubmit} />
+          }
+          {bountySubmittedSuccessfully &&
+            <div>Bounty successfully submitted to the TCRO!</div>
+          }
       </div>
     );
   }
