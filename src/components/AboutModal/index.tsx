@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 
 class AlertModals extends React.Component {
@@ -11,21 +11,16 @@ class AlertModals extends React.Component {
         this.toggle = this.toggle.bind(this);
     }
 
-    toggle() {
-        this.setState({
-            modal: !this.state.modal
-        });
-    }
-
-    render() {
+    public render() {
 
         return (
             <div className="text-center">
                 <a onClick={this.toggle}>About</a>
                 <Modal
-                  isOpen={this.state.modal}
+                  // isOpen={this.state.modal}
                   toggle={this.toggle}
-                  className={this.props.className}>
+                  // className={this.props.className}
+                >
                     <ModalHeader>Flyingcarpet TCRO</ModalHeader>
                     <ModalBody>
                         <b>balakbababaabkakkb</b><br/>
@@ -42,6 +37,11 @@ class AlertModals extends React.Component {
                 </Modal>
             </div>
         );
+    }
+    private toggle() {
+        this.setState({
+            // modal: !this.state.modal
+        });
     }
 }
 

@@ -13,3 +13,10 @@ export const setSearchTerm = (searchTerm: string) => (
     type: types.SET_SEARCH_TERM
   }
 );
+
+export const setMapClickLocation = (mapClickLocation: [any,any]) => (
+  {
+    mapClickLocation,
+    type: types.SET_MAP_CLICK_LOCATION
+  }
+);

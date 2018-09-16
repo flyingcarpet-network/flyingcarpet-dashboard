@@ -4,6 +4,7 @@ import { MapEvent } from 'react-mapbox-gl/lib/map-events';
 import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
 import { bindActionCreators, compose } from 'redux';
+import * as mapActions from '../../actions/mapActions';
 import * as tcroActions from '../../actions/tcroActions';
 import { MAPBOX_ACCESS_TOKEN } from '../../constants';
 import * as Web3Utils from '../../utils/web3-utils';
@@ -32,6 +33,7 @@ export interface IProps {
   web3: any;
   bounties: [any];
   setBounties: () => any;
+  setMapClickLocation: (location: [any,any]) => any;
 }
 
 const layerPaint = {
@@ -89,6 +91,7 @@ class BountyMap extends React.Component<IProps> {
                 onStyleLoad={mapInit}
                 style={mapStyle}
                 zoom={zoom}
+                onClick={this.recordMapClick}
               >
                 <Layer type="heatmap" paint={layerPaint as any}>
                   {bounties.map((bounty: any, index: number) => (
@@ -101,6 +104,11 @@ class BountyMap extends React.Component<IProps> {
       </div>
     )
   }
+  private recordMapClick = (_, data) => {
+    const { setMapClickLocation } = this.props;
+
+    setMapClickLocation(data.lngLat);
+  }
 }
 
 export default compose<any>(
@@ -110,7 +118,8 @@ export default compose<any>(
       center: state.map.center
     }),
     dispatch => ({
-      setBounties: bindActionCreators(tcroActions.setBounties, dispatch)
+      setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
+      setMapClickLocation: bindActionCreators(mapActions.setMapClickLocation, dispatch)
     })
   ),
   withWeb3
