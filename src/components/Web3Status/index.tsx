@@ -36,6 +36,7 @@ class Header extends React.Component<IProps> {
     const success = 'Connected to MetaMask';
 
     if (!web3State.isConnected || web3State.error) { return noWeb3Failure; }
+
     if (!isAnyUnlockedAccount) { return noUnlockedAccountFailure; }
     return success;
   }
