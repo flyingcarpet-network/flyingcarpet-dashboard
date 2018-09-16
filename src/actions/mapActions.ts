@@ -20,3 +20,23 @@ export const setMapClickLocation = (mapClickLocation: [any,any]) => (
     type: types.SET_MAP_CLICK_LOCATION
   }
 );
+
+export const setBountyStakeAmount = (bountyStakeAmount: number) => (
+  {
+    bountyStakeAmount,
+    type: types.SET_BOUNTY_STAKE_AMOUNT
+  }
+);
+
+export const setSelectedBountyToStake = (selectedBountyToStake: number) => (
+  {
+    selectedBountyToStake,
+    type: types.SET_SELECTED_BOUNTY_TO_STAKE
+  }
+);
+
+export const toggleBountyStakedSuccessfully = () => (
+  {
+    type: types.TOGGLE_BOUNTY_STAKED_SUCCESSFULLY
+  }
+);

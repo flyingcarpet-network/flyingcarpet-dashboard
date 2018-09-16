@@ -1,8 +1,8 @@
 import * as React from 'react';
 // import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
-import {NavLink, withRouter} from 'react-router-dom';
+// import {NavLink, withRouter} from 'react-router-dom';
 import AboutModal from './../AboutModal';
-import BountyModal from './../BountyModal';
+// import BountyModal from './../BountyModal';
 
 
 class Menu extends React.Component {
@@ -13,7 +13,7 @@ class Menu extends React.Component {
                     <li className="nav-item">
                       <AboutModal/>
                     </li>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                       <BountyModal/>
                     </li>
                     <li className="nav-item">
@@ -32,11 +32,11 @@ class Menu extends React.Component {
                                 </NavLink>
                             </li>
                         </ul>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
         );
     }
 }
 
-export default withRouter(Menu);
+export default Menu;
