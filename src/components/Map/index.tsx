@@ -4,9 +4,12 @@ import { MapEvent } from 'react-mapbox-gl/lib/map-events';
 import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
 import { bindActionCreators, compose } from 'redux';
+import * as mapActions from '../../actions/mapActions';
+import * as modalsActions from '../../actions/modalsActions';
 import * as tcroActions from '../../actions/tcroActions';
 import { MAPBOX_ACCESS_TOKEN } from '../../constants';
 import * as Web3Utils from '../../utils/web3-utils';
+import ContributionModal from './../ContributionModal';
 
 const Map = ReactMapboxGl({
   accessToken: MAPBOX_ACCESS_TOKEN
@@ -32,6 +35,8 @@ export interface IProps {
   web3: any;
   bounties: [any];
   setBounties: () => any;
+  toggleStakingDialog: () => any;
+  setSelectedBountyToStake: (bountyID: number) => any;
 }
 
 const layerPaint = {
@@ -81,6 +86,7 @@ class BountyMap extends React.Component<IProps> {
 
     return (
       <div className="app-wrapper">
+          <ContributionModal />
           <div className="d-flex justify-content-center">
             <div className="row">
               <Map
@@ -95,7 +101,6 @@ class BountyMap extends React.Component<IProps> {
                     <Feature
                       key={index}
                       coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
-                      onClick={this.contribute10NTNToBounty.bind(this, bounty.bountyID)}
                     />
                   ))}
                 </Layer>
@@ -104,7 +109,7 @@ class BountyMap extends React.Component<IProps> {
                     <Marker
                       key={index}
                       coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
-                      onClick={this.contribute10NTNToBounty.bind(this, bounty.bountyID)}
+                      onClick={this.markerClick.bind(this, bounty.bountyID)}
                     >
                       <img alt="" src="https://www.mapbox.com/help/img/interactive-tools/custom_marker.png" />
                     </Marker>
@@ -116,9 +121,11 @@ class BountyMap extends React.Component<IProps> {
       </div>
     )
   }
-  public contribute10NTNToBounty = (bountyID) => {
-    const { web3 } = this.props;
-    Web3Utils.contributeToBounty(web3, bountyID, 10);
+  private markerClick = (bountyID: number) => {
+    const { toggleStakingDialog, setSelectedBountyToStake } = this.props;
+
+    toggleStakingDialog(); // Open staking modal
+    setSelectedBountyToStake(bountyID); // Set bounty ID of currently clicked bounty
   }
 }
 
@@ -129,7 +136,9 @@ export default compose<any>(
       center: state.map.center
     }),
     dispatch => ({
-      setBounties: bindActionCreators(tcroActions.setBounties, dispatch)
+      setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
+      toggleStakingDialog: bindActionCreators(modalsActions.toggleStakingDialog, dispatch),
+      setSelectedBountyToStake: bindActionCreators(mapActions.setSelectedBountyToStake, dispatch)
     })
   ),
   withWeb3
