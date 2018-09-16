@@ -35,6 +35,7 @@ export interface IProps {
   web3: any;
   bounties: [any];
   setBounties: () => any;
+  setMapClickLocation: (location: [any,any]) => any;
   toggleStakingDialog: () => any;
   setSelectedBountyToStake: (bountyID: number) => any;
 }
@@ -95,6 +96,7 @@ class BountyMap extends React.Component<IProps> {
                 onStyleLoad={mapInit}
                 style={mapStyle}
                 zoom={zoom}
+                onClick={this.recordMapClick}
               >
                 <Layer type="heatmap" paint={layerPaint as any}>
                   {bounties.map((bounty: any, index: number) => (
@@ -121,6 +123,11 @@ class BountyMap extends React.Component<IProps> {
       </div>
     )
   }
+  private recordMapClick = (_, data) => {
+    const { setMapClickLocation } = this.props;
+
+    setMapClickLocation(data.lngLat);
+  }
   private markerClick = (bountyID: number) => {
     const { toggleStakingDialog, setSelectedBountyToStake } = this.props;
 
@@ -137,6 +144,7 @@ export default compose<any>(
     }),
     dispatch => ({
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
+      setMapClickLocation: bindActionCreators(mapActions.setMapClickLocation, dispatch),
       toggleStakingDialog: bindActionCreators(modalsActions.toggleStakingDialog, dispatch),
       setSelectedBountyToStake: bindActionCreators(mapActions.setSelectedBountyToStake, dispatch)
     })

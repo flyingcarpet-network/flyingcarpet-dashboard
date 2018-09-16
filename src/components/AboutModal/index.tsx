@@ -9,16 +9,16 @@ export interface IProps {
   toggleAboutDialog: () => any;
 }
 
-class AlertModals extends React.Component<IProps> {
+class AboutModal extends React.Component<IProps> {
   public render() {
     const { showAboutDialog, toggleAboutDialog } = this.props;
-
     return (
       <div className="text-center">
         <a onClick={toggleAboutDialog}>About</a>
         <Modal
           isOpen={showAboutDialog}
-          toggle={toggleAboutDialog}>
+          toggle={toggleAboutDialog}
+        >
           <ModalHeader>Flyingcarpet TCRO</ModalHeader>
           <ModalBody>
             <b>balakbababaabkakkb</b><br/>
@@ -29,8 +29,7 @@ class AlertModals extends React.Component<IProps> {
             non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={toggleAboutDialog}>Do Something</Button>{' '}
-            <Button color="secondary" onClick={toggleAboutDialog}>Cancel</Button>
+            <Button color="primary" onClick={toggleAboutDialog}>Done</Button>
           </ModalFooter>
         </Modal>
       </div>
@@ -45,4 +44,4 @@ export default connect(
   dispatch => ({
     toggleAboutDialog: bindActionCreators(modalsActions.toggleAboutDialog, dispatch)
   })
-)(AlertModals);
+)(AboutModal);

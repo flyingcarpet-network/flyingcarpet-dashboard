@@ -130,3 +130,63 @@ export function contributeToBounty(web3: any, bountyID: number, amountToken: num
     }).catch(reject);
   });
 }
+
+/*
+ * @dev issueBounty           Submits a bounty for the provided form values.
+ * @param web3                Web from Web3Provider injected by Ethereum-enabled browser.
+ * @param formValues          A data object used to create the bounty. This data must obey the
+ *                            schema detailed here: https://github.com/flyingcarpet-network/Flyingcarpet-TCR/tree/feature/Update-README-for-TCRO#registry-contract-functions
+ */
+export function submitBounty(web3, formValues) {
+  return new Promise((resolve, reject) => {
+    const registryContractAddress = contractAddresses.Registry;
+    const registryContract = new web3.eth.Contract(RegistryJSON.abi, registryContractAddress);
+
+    const erc20ContractAddress = contractAddresses.Nitrogen;
+
+    const { geohash, dataCollectionRadius, useType, collectionType, droneType, resolution, fileFormat } = formValues;
+
+    // TODO: Add extensive data validation of form values.
+
+    const bountyObject = {
+      "payload": {
+        "title":  "Data collection using a " + capitalize(collectionType) + " for " + capitalize(useType) + " @  " + geohash + " (geohash)",
+        "description": "This is a request for aerial land data collection using a satellite. ...",
+        "issuer": [
+          {"address": registryContractAddress}
+        ],
+        "funders":[],
+        "categories": ["Data Collection", capitalize(collectionType), capitalize(useType)],
+        "created": 1536957876,
+        "tokenSymbol": "NTN",
+        "tokenAddress": erc20ContractAddress,
+        "geohash": geohash,
+        "useType": useType,
+        "collectionType": collectionType,
+        "radiusOfCollection": dataCollectionRadius,
+        "resolution": resolution,
+        "fileFormat": fileFormat,
+        "droneType": droneType
+      }
+    };
+    const bountyDataString = JSON.stringify(bountyObject);
+
+    // Get the default (active) MetaMask account address
+    return getDefaultAccount(web3).then((accountAddr: any) => {
+      // Get current gas price
+      return web3.eth.getGasPrice().then((price: number) => {
+        // Submit new bounty 
+        return registryContract.methods.submit(bountyDataString).send({ from: accountAddr, gasPrice: price, gas: 1000000 }).then(resolve).catch(reject);
+      }).catch(reject);
+    }).catch(reject);
+  });
+}
+
+/*
+ * @dev capitalize           Simple helper function to capitalize the first letter of a string.
+ * @param str                Any string to be capitalized.
+ */
+function capitalize(str: string) {
+  if (!str || str.length === 0) { return ''; }
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

@@ -14,6 +14,13 @@ export const setSearchTerm = (searchTerm: string) => (
   }
 );
 
+export const setMapClickLocation = (mapClickLocation: [any,any]) => (
+  {
+    mapClickLocation,
+    type: types.SET_MAP_CLICK_LOCATION
+  }
+);
+
 export const setBountyStakeAmount = (bountyStakeAmount: number) => (
   {
     bountyStakeAmount,
@@ -31,5 +38,11 @@ export const setSelectedBountyToStake = (selectedBountyToStake: number) => (
 export const toggleBountyStakedSuccessfully = () => (
   {
     type: types.TOGGLE_BOUNTY_STAKED_SUCCESSFULLY
+  }
+);
+
+export const toggleBountySubmissionSuccessfully = () => (
+  {
+    type: types.TOGGLE_BOUNTY_SUBMISSION_SUCCESSFULLY
   }
 );
