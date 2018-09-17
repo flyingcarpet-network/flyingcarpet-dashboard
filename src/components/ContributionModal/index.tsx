@@ -5,6 +5,7 @@ import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import { bindActionCreators, compose } from 'redux';
 import * as mapActions from '../../actions/mapActions';
 import * as modalsActions from '../../actions/modalsActions';
+import * as tcroActions from '../../actions/tcroActions';
 import * as Web3Utils from '../../utils/web3-utils';
 
 export interface IProps {
@@ -16,6 +17,7 @@ export interface IProps {
   selectedBountyToStake: number;
   toggleBountyStakedSuccessfully: () => any;
   bountyStakedSuccessfully: boolean;
+  setBounties: (bounties: any) => any;
 }
 
 class AlertModals extends React.Component<IProps> {
@@ -70,15 +72,22 @@ class AlertModals extends React.Component<IProps> {
     setBountyStakeAmount(bountyStakeAmount);
   }
   private contributeToBounty = () => {
-    const { web3, selectedBountyToStake, bountyStakeAmount, toggleStakingDialog, setBountyStakeAmount, toggleBountyStakedSuccessfully } = this.props;
+    const { web3, selectedBountyToStake, bountyStakeAmount, toggleStakingDialog, setBountyStakeAmount, toggleBountyStakedSuccessfully, setBounties } = this.props;
 
     Web3Utils.contributeToBounty(web3, selectedBountyToStake, bountyStakeAmount).then(() => {
+      // Clear bounty staking input
       setBountyStakeAmount(0);
+      // Show success message
       toggleBountyStakedSuccessfully();
+      // Wait 4 seconds
       setTimeout(() => {
+        // Close the staking dialog modal
         toggleStakingDialog();
+        // Hide success message
         toggleBountyStakedSuccessfully();
-      }, 2000);
+        // Reload map bounties
+        Web3Utils.getBounties(web3).then(setBounties).catch(err => { console.error('Unable to load bounties!'); console.error(err); });
+      }, 4000);
     });
   }
 }
@@ -94,7 +103,8 @@ export default compose<any>(
     dispatch => ({
       toggleStakingDialog: bindActionCreators(modalsActions.toggleStakingDialog, dispatch),
       setBountyStakeAmount: bindActionCreators(mapActions.setBountyStakeAmount, dispatch),
-      toggleBountyStakedSuccessfully: bindActionCreators(mapActions.toggleBountyStakedSuccessfully, dispatch)
+      toggleBountyStakedSuccessfully: bindActionCreators(mapActions.toggleBountyStakedSuccessfully, dispatch),
+      setBounties: bindActionCreators(tcroActions.setBounties, dispatch)
     })
   ),
   withWeb3

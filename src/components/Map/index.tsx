@@ -80,7 +80,7 @@ const layerPaint = {
 class BountyMap extends React.Component<IProps> {
   public componentDidMount() {
     const { web3, setBounties } = this.props;
-    Web3Utils.getBounties(web3).then(setBounties).catch(() => console.error('Unable to load bounties!'));
+    Web3Utils.getBounties(web3).then(setBounties).catch(err => { console.error('Unable to load bounties!'); console.error(err); });
   }
   public render() {
     const { center, mapInit, zoom, bounties } = this.props;
