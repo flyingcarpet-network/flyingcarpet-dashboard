@@ -38,6 +38,8 @@ export interface IProps {
   setMapClickLocation: (location: [any,any]) => any;
   toggleStakingDialog: () => any;
   setSelectedBountyToStake: (bountyID: number) => any;
+  setStakingPoolSize: (size: number) => any;
+  stakingPoolSize: number;
 }
 
 const layerPaint = {
@@ -79,11 +81,16 @@ const layerPaint = {
 
 class BountyMap extends React.Component<IProps> {
   public componentDidMount() {
-    const { web3, setBounties } = this.props;
-    Web3Utils.getBounties(web3).then(setBounties).catch(err => { console.error('Unable to load bounties!'); console.error(err); });
+    const { web3, setBounties, setStakingPoolSize } = this.props;
+
+    // Load bounties
+    Web3Utils.getBounties(web3).then(setBounties).catch(err => { console.error('Unable to load bounties!'); console.error(err) });
+
+    // Get stakingPoolSize smart-contract constant
+    Web3Utils.getStakingPoolSize(web3).then(setStakingPoolSize).catch(err => { console.error('Unable to load stakingPoolSize constant!'); console.error(err) });
   }
   public render() {
-    const { center, mapInit, zoom, bounties } = this.props;
+    const { center, mapInit, zoom, bounties, stakingPoolSize } = this.props;
 
     return (
       <div>
@@ -113,7 +120,14 @@ class BountyMap extends React.Component<IProps> {
                       coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
                       onClick={this.markerClick.bind(this, bounty.bountyID)}
                     >
-                      <img alt="" src="https://www.mapbox.com/help/img/interactive-tools/custom_marker.png" />
+                      <div>
+                        {(bounty.balance >= stakingPoolSize) && // Active bounty (ready to be fulfilled)
+                          <img alt="" src="https://www.mapbox.com/help/img/interactive-tools/custom_marker.png" />
+                        }
+                        {(bounty.balance < stakingPoolSize) && // Inactive bounty (still waiting to be fully funded)
+                          <img alt="" src="https://www.att.com/stores/permanent-b0b701/assets/images/logo.cd79c1f9.png" />
+                        }
+                      </div>
                     </Marker>
                   ))}
                 </div>
@@ -140,13 +154,15 @@ export default compose<any>(
   connect(
     state => ({
       bounties: state.tcro.bounties,
-      center: state.map.center
+      center: state.map.center,
+      stakingPoolSize: state.tcro.stakingPoolSize
     }),
     dispatch => ({
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
       setMapClickLocation: bindActionCreators(mapActions.setMapClickLocation, dispatch),
       toggleStakingDialog: bindActionCreators(modalsActions.toggleStakingDialog, dispatch),
-      setSelectedBountyToStake: bindActionCreators(mapActions.setSelectedBountyToStake, dispatch)
+      setSelectedBountyToStake: bindActionCreators(mapActions.setSelectedBountyToStake, dispatch),
+      setStakingPoolSize: bindActionCreators(tcroActions.setStakingPoolSize, dispatch)
     })
   ),
   withWeb3
