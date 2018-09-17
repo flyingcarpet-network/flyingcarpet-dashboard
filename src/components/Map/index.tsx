@@ -132,6 +132,8 @@ class BountyMap extends React.Component<IProps> {
                           onClick={this.markerClick.bind(this, bounty.bountyID)}
                         >
                             <div>
+                              {(Number(bounty.balance) < Number(stakingPoolSize)) && // Show the amount staked against inactive bounties (not funded yet)
+                                (bounty.balance + " NTN")}
                               {(bounty.balance >= stakingPoolSize) && // Active bounty (ready to be fulfilled)
                                 <img alt="" src="https://www.mapbox.com/help/img/interactive-tools/custom_marker.png" />
                               }
