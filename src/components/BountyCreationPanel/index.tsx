@@ -5,6 +5,7 @@ import { withWeb3 } from 'react-web3-provider';
 import { bindActionCreators, compose } from 'redux';
 import { change, SubmissionError } from 'redux-form';
 import * as mapActions from '../../actions/mapActions';
+import * as tcroActions from '../../actions/tcroActions';
 import * as Web3Utils from '../../utils/web3-utils';
 import Form from './Form';
 
@@ -16,6 +17,7 @@ export interface IProps {
   setGeohash: (newGeohash: string) => any;
   toggleBountySubmissionSuccessfully: () => any;
   bountySubmittedSuccessfully: boolean;
+  setBounties: (bounties: any) => any;
 }
 
 class BountyCreationPanel extends React.Component<IProps> {
@@ -58,7 +60,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     return Geohash.encode(mapClickLocation.lat, mapClickLocation.lng);
   }
   private formSubmit = values => {
-    const { web3, toggleBountySubmissionSuccessfully } = this.props;
+    const { web3, toggleBountySubmissionSuccessfully, setBounties } = this.props;
 
     // Validate that a geohash string is being submitted, otherwise provide an error to the user
     if (!values.geohash || values.geohash.length === 0) {
@@ -72,6 +74,8 @@ class BountyCreationPanel extends React.Component<IProps> {
       toggleBountySubmissionSuccessfully();
       // Switch back to creation dialog in 10 seconds
       setTimeout(toggleBountySubmissionSuccessfully, 10000);
+      // Reload map bounties
+      Web3Utils.getBounties(web3).then(setBounties).catch(err => { console.error('Unable to load bounties!'); console.error(err); });
     }).catch(console.error);
   }
 }
@@ -86,7 +90,8 @@ export default compose<any>(
     dispatch => ({
       toggleBountySubmissionSuccessfully: bindActionCreators(mapActions.toggleBountySubmissionSuccessfully, dispatch),
       // Dispatches redux-form action
-      setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash))
+      setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash)),
+      setBounties: bindActionCreators(tcroActions.setBounties, dispatch)
     })
   ),
   withWeb3

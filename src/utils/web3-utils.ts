@@ -88,13 +88,18 @@ export function getBounties(web3) {
             registryContract.methods.getBountyData(i - 1).call().then((dataString: string) => {
               const dataObj: any = JSON.parse(dataString);
 
-              // Push bounty to return array
-              bountyData.push({
-                ...dataObj.payload,
-                coordinates: Geohash.decode(dataObj.payload.geohash),
-                bountyID,
-                balance: bountyBalance
-              });
+              // Check that bounty has a geohash set (otherwise it will throw an error if the geohash field is empty)
+              if (dataObj.payload.geohash && dataObj.payload.geohash.length > 0) {
+                // Push bounty to return array
+                bountyData.push({
+                  ...dataObj.payload,
+                  coordinates: Geohash.decode(dataObj.payload.geohash),
+                  bountyID,
+                  balance: bountyBalance
+                });
+              } else {
+                console.error('Empty `geohash` field, unable to display bounty on map! Bounty ID: ' + (i - 1));
+              }
               if (--i) { return nextBounty(i); } // Decrement i and call nextBounty again if i > 0
               else { return resolve(bountyData); } // Last iteration
             }).catch(reject);
