@@ -86,7 +86,7 @@ class BountyMap extends React.Component<IProps> {
     const { center, mapInit, zoom, bounties } = this.props;
 
     return (
-      <div className="app-wrapper">
+      <div>
           <ContributionModal />
           <div className="d-flex justify-content-center">
             <div className="row">

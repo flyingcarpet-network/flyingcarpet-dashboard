@@ -2,7 +2,7 @@ import * as React from 'react';
 import {isIOS, isMobile} from 'react-device-detect';
 import { connect } from 'react-redux';
 import BountyCreationPanel from './../components/BountyCreationPanel';
-import Footer from './../components/Footer';
+// import Footer from './../components/Footer';
 import Header from './../components/Header/index';
 import BountyMap from './../components/Map';
 
@@ -17,19 +17,25 @@ class Main extends React.Component {
     }
     return (
       <div className="app-main">
-        <div className="app-container fixed-drawer">
+        <div className="app-container">
           <div className="app-main-container">
             <div className="app-header">
               <Header />
             </div>
+            <main className="app-main-content-wrapper">
+              <div className="app-main-content">
+                <div className="app-wrapper">
+                  <div className="row">
+                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
+                        <BountyCreationPanel />
+                      </div>
+                      <BountyMap />
+                  </div>
+                </div>
+              </div>
+              {/* <Footer/> */}
+            </main>
           </div>
-          <main className="app-main-content-wrapper">
-            <div className="app-main-content">
-              <BountyCreationPanel />
-              <BountyMap />
-              <Footer />
-            </div>
-          </main>
         </div>
       </div>
     );

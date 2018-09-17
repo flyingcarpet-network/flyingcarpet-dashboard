@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 const getDisplayString = (sub) => {
     const arr = sub.split("-");
@@ -9,17 +9,8 @@ const getDisplayString = (sub) => {
     }
 
 };
-const getUrlString = (path, sub, index) => {
-    if (index === 0) {
-        return '#/';
-    } else {
-        return '#/' + path.split(sub)[0] + sub;
-    }
-};
 
-const ContainerHeader = ({title, match}) => {
-    const path = match.path.substr(1);
-    const subPath = path.split('/');
+const ContainerHeader = ({title}) => {
     return (
         <div className="page-heading d-sm-flex justify-content-sm-between align-items-sm-center">
             <h2 className="title mb-3 mb-sm-0">{title}</h2>
