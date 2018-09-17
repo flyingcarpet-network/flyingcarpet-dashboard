@@ -28,7 +28,7 @@ class Form extends React.Component<IProps> {
                     <label>Geo hash</label>
                     <Field
                       name="geohash"
-                      class="form-control"
+                      className="form-control"
                       component="input"
                       type="string"
                       placeholder="Click The Map"
@@ -39,7 +39,7 @@ class Form extends React.Component<IProps> {
                     <label>Coordinates</label>
                     <Field
                       name="coordinates"
-                      class="form-control"
+                      className="form-control"
                       component="input"
                       type="string"
                       placeholder="Click The Map"
@@ -51,7 +51,7 @@ class Form extends React.Component<IProps> {
                     <Field
                         name="useType"
                         component="select"
-                        class="form-control">
+                        className="form-control">
                       <option value="rooftop">Rooftop</option>
                       <option value="land">Land</option>
                       <option value="forest">Forest</option>
@@ -61,7 +61,7 @@ class Form extends React.Component<IProps> {
                     <label>Collection</label>
                     <Field
                         name="collectionType"
-                        class="form-control"
+                        className="form-control"
                         component="select">
                         <option value="drone">Drone</option>
                         <option value="satellite">Satellite</option>
@@ -73,7 +73,7 @@ class Form extends React.Component<IProps> {
                         <label>Hardware</label>
                         <Field
                           name="droneType"
-                          class="form-control"
+                          className="form-control"
                           component="select">
                           <option value="thermal">Thermal</option>
                           <option value="gpr">Ground Penetrating Radar</option>
@@ -85,7 +85,7 @@ class Form extends React.Component<IProps> {
                     <label>Format</label>
                     <Field name="fileFormat"
                       component="select"
-                      class="form-control">
+                      className="form-control">
                       <option value="mpeg">MPEG</option>
                       <option value="raw">RAW</option>
                       <option value="jpeg">JPEG</option>

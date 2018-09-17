@@ -1,8 +1,8 @@
 {
 	"contracts": {
-		"Registry": "0x5c92892a72812c79871b5294efe067519f04a445",
-		"Nitrogen": "0xb0e2931d33c52b99825933737644211ccefb081b",
-		"StandardBounties": "0xe6ceb9313f5d21da736f797bc7ded826307b55a8",
-		"Parameterizer": "0x8c1198b435daac7faae3004128f3cc6107e51d25"
+		"Registry": "0xe39e1aacdbfaef5adacdcbc63fc58d4ad6abc80e",
+		"Nitrogen": "0x9fa9e7c079f51bdc0a5d01e33c1e89d75db139ad",
+		"StandardBounties": "0x519eb7e552cb7ec0f46d2d90e0836eeb7af075fb",
+		"Parameterizer": "0x90cafb308973776314a50765f57eb3b42a87a01a"
 	}
 }
