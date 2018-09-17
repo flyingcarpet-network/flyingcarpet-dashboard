@@ -26,11 +26,15 @@ class Main extends React.Component {
               <div className="app-main-content">
                 <div className="app-wrapper">
                   <div className="row">
-                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
-                        <BountyCreationPanel />
-                      </div>
-                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
+                      <div className="col-sm-4 col-md-4 col-lg-3 col-12 pull-right" style={{zIndex: 90}}>
                         <BountyStatusFilter />
+                      </div>
+                  </div>
+                  <div className="row"/>
+                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" />
+                  <div className="row">
+                      <div className="col-sm-4 col-md-4 col-lg-3 col-12">
+                        <BountyCreationPanel />
                       </div>
                       <BountyMap />
                   </div>

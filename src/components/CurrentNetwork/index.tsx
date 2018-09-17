@@ -30,7 +30,7 @@ class Header extends React.Component<IProps> {
     console.log('networkName: ', networkName);
 
     let classbox= 'jr-btn jr-btn-xs jr-btn-default btn btn-default';
-    let styleIcon= 'color:red';
+    let styleIcon= 'red';
     // let style = styles.unknownCircle
 
     if (networkName !== 'rinkeby' && networkName !== 'main') {
@@ -40,14 +40,14 @@ class Header extends React.Component<IProps> {
     if (networkName === 'rinkeby') {
       // style= styles.rinkebyCircle;
       classbox= 'jr-btn jr-btn-xs jr-btn-default btn btn-default';
-      styleIcon= 'color:red';
+      styleIcon= 'red';
       networkName = 'Rinkeby Network';
     }
 
     if (networkName === 'main') {
       // style= styles.mainnetCircle;
       classbox= 'jr-btn jr-btn-xs jr-btn-default btn btn-default';
-      styleIcon= 'color:red';
+      styleIcon= 'red';
       networkName = 'Main Ethereum Network';
     }
 
@@ -56,7 +56,7 @@ class Header extends React.Component<IProps> {
         {/* <span className="badge badge-success">Network: {networkName}</span> */}
         <li className="list-inline-item user-nav">
           <button className={classbox}>
-            <i className="zmdi zmdi-circle zmdi-hc-fw" color={styleIcon}/> {networkName}
+            <i className="zmdi zmdi-circle zmdi-hc-fw" style={{color:styleIcon}}/> {networkName}
           </button>
         </li>
       </div>
