@@ -54,3 +54,10 @@ export const setBountyFilter = (bountyFilter: BountyFilter) => (
     type: types.SET_BOUNTY_FILTER
   }
 );
+
+export const setLastSuccessfulBountyTxnHash = (lastSuccessfulBountyTxnHash: string) => (
+  {
+    lastSuccessfulBountyTxnHash,
+    type: types.SET_LAST_SUCCESSFUL_BOUNTY_TXN_HASH
+  }
+);
