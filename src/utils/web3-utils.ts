@@ -149,7 +149,7 @@ export function submitBounty(web3, formValues) {
 
     const erc20ContractAddress = contractAddresses.Nitrogen;
 
-    const { geohash, dataCollectionRadius, useType, collectionType, droneType, resolution, fileFormat } = formValues;
+    const { geohash, useType, collectionType, droneType, fileFormat } = formValues;
 
     // TODO: Add extensive data validation of form values.
 
@@ -168,8 +168,8 @@ export function submitBounty(web3, formValues) {
         "geohash": geohash,
         "useType": useType,
         "collectionType": collectionType,
-        "radiusOfCollection": dataCollectionRadius,
-        "resolution": resolution,
+        // "radiusOfCollection": dataCollectionRadius,
+        // "resolution": resolution,
         "fileFormat": fileFormat,
         "droneType": droneType
       }

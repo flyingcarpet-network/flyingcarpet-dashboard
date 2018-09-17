@@ -36,16 +36,6 @@ class Form extends React.Component<IProps> {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Data Collection Radius</label>
-                    <Field
-                      name="dataCollectionRadius"
-                      component="input"
-                      type="number"
-                      class="form-control"
-                      parse={this.parseNumber}
-                    />
-                  </div>
-                  <div className="form-group">
                     <label>Type</label>
                     <Field
                         name="useType"
@@ -81,23 +71,14 @@ class Form extends React.Component<IProps> {
                     </div>
                   }
                   <div className="form-group">
-                    <label>Resolution</label>
-                    <Field
-                      name="resolution"
-                      class="form-control"
-                      component="input"
-                      type="string"
-                    />
-                  </div>
-                  <div className="form-group">
                     <label>Format</label>
                     <Field name="fileFormat"
                       component="select"
                       class="form-control">
+                      <option value="mpeg">MPEG</option>
                       <option value="raw">RAW</option>
                       <option value="jpeg">JPEG</option>
                       <option value="h.264">H.264</option>
-                      <option value="mpeg">MPEG</option>
                     </Field>
                   </div>
                   {error && <strong>{error}</strong>}
@@ -112,9 +93,6 @@ class Form extends React.Component<IProps> {
         </div>
       </div>
     )
-  }
-  private parseNumber(value: any) {
-    return Number(value);
   }
 }
 
