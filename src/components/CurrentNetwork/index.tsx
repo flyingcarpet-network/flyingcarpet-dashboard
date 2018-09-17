@@ -28,6 +28,7 @@ class Header extends React.Component<IProps> {
     return (
       <div>
         <span className="badge badge-success">Network: {networkName}</span>
+        <li className="list-inline-item user-nav"><button className="jr-btn jr-btn-xs jr-btn-default btn btn-default"><i className="zmdi zmdi-circle zmdi-hc-fw"/> Mainnet Network</button></li>
       </div>
     );
   }
