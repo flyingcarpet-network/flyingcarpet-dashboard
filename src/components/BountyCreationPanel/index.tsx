@@ -17,12 +17,13 @@ export interface IProps {
   setGeohash: (newGeohash: string) => any;
   toggleBountySubmissionSuccessfully: () => any;
   bountySubmittedSuccessfully: boolean;
+  setCoordinates: (newCoordinates: string) => any;
   setBounties: (bounties: any) => any;
 }
 
 class BountyCreationPanel extends React.Component<IProps> {
   public componentDidUpdate() {
-    const { formData, setGeohash } = this.props;
+    const { formData, setGeohash, setCoordinates } = this.props;
 
     let geohashInputValue = '';
     // Only access current geohash if it is in fact set (not undefined)
@@ -37,6 +38,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     // update the input to contain the new geohash
     if (newGeohash !== geohashInputValue) {
       setGeohash(newGeohash);
+      setCoordinates(this.getCoordinatesString(newGeohash));
     }
   }
   public render() {
@@ -59,8 +61,18 @@ class BountyCreationPanel extends React.Component<IProps> {
     if (!mapClickLocation.lat || !mapClickLocation.lng) { return ''; }
     return Geohash.encode(mapClickLocation.lat, mapClickLocation.lng);
   }
+  private getCoordinatesString(geohash) {
+    const coordinatesObj = Geohash.decode(geohash);
+    return coordinatesObj.lat + ", " + coordinatesObj.lon;
+  }
   private formSubmit = values => {
     const { web3, toggleBountySubmissionSuccessfully, setBounties } = this.props;
+
+    // Validate that a geohash string is being submitted, otherwise provide an error to the user
+    if (!values.geohash || values.geohash.length === 0) {
+      throw new SubmissionError({ _error: 'Please select a location for your bounty on the map.' });
+      return;
+    }
 
     // Validate that a geohash string is being submitted, otherwise provide an error to the user
     if (!values.geohash || values.geohash.length === 0) {
@@ -91,6 +103,7 @@ export default compose<any>(
       toggleBountySubmissionSuccessfully: bindActionCreators(mapActions.toggleBountySubmissionSuccessfully, dispatch),
       // Dispatches redux-form action
       setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash)),
+      setCoordinates: (newCoordinates: string) => dispatch(change('bountyCreationPanel', 'coordinates', newCoordinates)),
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch)
     })
   ),
