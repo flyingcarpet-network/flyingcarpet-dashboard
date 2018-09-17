@@ -1,3 +1,4 @@
+import { BountyFilter } from '../reducers/dataTypeEnums';
 import * as types from './mapActions-types';
 
 export const setCenter = (center: [number, number]) => (
@@ -44,5 +45,12 @@ export const toggleBountyStakedSuccessfully = () => (
 export const toggleBountySubmissionSuccessfully = () => (
   {
     type: types.TOGGLE_BOUNTY_SUBMISSION_SUCCESSFULLY
+  }
+);
+
+export const setBountyFilter = (bountyFilter: BountyFilter) => (
+  {
+  	bountyFilter,
+    type: types.SET_BOUNTY_FILTER
   }
 );
