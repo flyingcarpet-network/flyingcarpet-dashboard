@@ -18,11 +18,13 @@ export interface IProps {
   toggleBountyStakedSuccessfully: () => any;
   bountyStakedSuccessfully: boolean;
   setBounties: (bounties: any) => any;
+  lastSuccessfulBountyTxnHash: string;
+  setLastSuccessfulBountyTxnHash: (hash: string) => any;
 }
 
 class AlertModals extends React.Component<IProps> {
   public render() {
-    const { showStakingDialog, toggleStakingDialog, bountyStakeAmount, bountyStakedSuccessfully } = this.props;
+    const { showStakingDialog, toggleStakingDialog, bountyStakeAmount, bountyStakedSuccessfully, lastSuccessfulBountyTxnHash } = this.props;
 
     return (
       <div className="text-center">
@@ -45,6 +47,8 @@ class AlertModals extends React.Component<IProps> {
           {bountyStakedSuccessfully &&
             <ModalBody>
               <b>Bounty successfully staked!</b>
+              <br />
+              You can view the transaction on <a href={"https://rinkeby.etherscan.io/tx/" + lastSuccessfulBountyTxnHash} target="_blank">EtherScan</a>.
             </ModalBody>
           }
           <ModalFooter>
@@ -72,14 +76,16 @@ class AlertModals extends React.Component<IProps> {
     setBountyStakeAmount(bountyStakeAmount);
   }
   private contributeToBounty = () => {
-    const { web3, selectedBountyToStake, bountyStakeAmount, toggleStakingDialog, setBountyStakeAmount, toggleBountyStakedSuccessfully, setBounties } = this.props;
+    const { web3, selectedBountyToStake, bountyStakeAmount, toggleStakingDialog, setBountyStakeAmount, toggleBountyStakedSuccessfully, setBounties, setLastSuccessfulBountyTxnHash } = this.props;
 
-    Web3Utils.contributeToBounty(web3, selectedBountyToStake, bountyStakeAmount).then(() => {
+    Web3Utils.contributeToBounty(web3, selectedBountyToStake, bountyStakeAmount).then(res => {
       // Clear bounty staking input
       setBountyStakeAmount(0);
       // Show success message
       toggleBountyStakedSuccessfully();
-      // Wait 4 seconds
+      // Set hash of successful bounty
+      setLastSuccessfulBountyTxnHash((res as any).transactionHash);
+      // Wait 6 seconds
       setTimeout(() => {
         // Close the staking dialog modal
         toggleStakingDialog();
@@ -87,7 +93,7 @@ class AlertModals extends React.Component<IProps> {
         toggleBountyStakedSuccessfully();
         // Reload map bounties
         Web3Utils.getBounties(web3).then(setBounties).catch(err => { console.error('Unable to load bounties!'); console.error(err); });
-      }, 4000);
+      }, 6000);
     });
   }
 }
@@ -98,13 +104,15 @@ export default compose<any>(
       showStakingDialog: state.modals.stakingDialog,
       bountyStakeAmount: state.map.bountyStakeAmount,
       selectedBountyToStake: state.map.selectedBountyToStake,
-      bountyStakedSuccessfully: state.map.bountyStakedSuccessfully
+      bountyStakedSuccessfully: state.map.bountyStakedSuccessfully,
+      lastSuccessfulBountyTxnHash: state.map.lastSuccessfulBountyTxnHash
     }),
     dispatch => ({
       toggleStakingDialog: bindActionCreators(modalsActions.toggleStakingDialog, dispatch),
       setBountyStakeAmount: bindActionCreators(mapActions.setBountyStakeAmount, dispatch),
       toggleBountyStakedSuccessfully: bindActionCreators(mapActions.toggleBountyStakedSuccessfully, dispatch),
-      setBounties: bindActionCreators(tcroActions.setBounties, dispatch)
+      setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
+      setLastSuccessfulBountyTxnHash: bindActionCreators(mapActions.setLastSuccessfulBountyTxnHash, dispatch)
     })
   ),
   withWeb3
