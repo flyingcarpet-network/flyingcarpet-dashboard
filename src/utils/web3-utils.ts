@@ -6,6 +6,7 @@ import Geohash from 'latlon-geohash';
 const EIP20JSON = require('./../contracts/abi/EIP20.json');
 const RegistryJSON = require('./../contracts/abi/Registry.json');
 const StandardBountiesJSON = require('./../contracts/abi/StandardBountiesInterface.json');
+const ParameterizerJSON = require('./../contracts/abi/Parameterizer.json');
 const addresses = require('./../contracts/addresses.json');
 const contractAddresses = addresses.contracts;
 
@@ -81,18 +82,27 @@ export function getBounties(web3) {
       return (function nextBounty (i) {
         // Get bounty ID from listing
         registryContract.methods.getBountyID(i - 1).call().then((bountyID: number) => {
-          // Get bounty `data` field from listing
-          registryContract.methods.getBountyData(i - 1).call().then((dataString: string) => {
-            const dataObj: any = JSON.parse(dataString);
+          // Get bounty balance from listing
+          registryContract.methods.getBountyBalance(i - 1).call().then((bountyBalance: number) => {
+            // Get bounty `data` field from listing
+            registryContract.methods.getBountyData(i - 1).call().then((dataString: string) => {
+              const dataObj: any = JSON.parse(dataString);
 
-            // Push bounty to return array
-            bountyData.push({
-              ...dataObj.payload,
-              coordinates: Geohash.decode(dataObj.payload.geohash),
-              bountyID
-            });
-            if (--i) { return nextBounty(i); } // Decrement i and call nextBounty again if i > 0
-            else { return resolve(bountyData); } // Last iteration
+              // Check that bounty has a geohash set (otherwise it will throw an error if the geohash field is empty)
+              if (dataObj.payload.geohash && dataObj.payload.geohash.length > 0) {
+                // Push bounty to return array
+                bountyData.push({
+                  ...dataObj.payload,
+                  coordinates: Geohash.decode(dataObj.payload.geohash),
+                  bountyID,
+                  balance: bountyBalance
+                });
+              } else {
+                console.error('Empty `geohash` field, unable to display bounty on map! Bounty ID: ' + (i - 1));
+              }
+              if (--i) { return nextBounty(i); } // Decrement i and call nextBounty again if i > 0
+              else { return resolve(bountyData); } // Last iteration
+            }).catch(reject);
           }).catch(reject);
         }).catch(reject);
       })(numListings);
@@ -144,7 +154,7 @@ export function submitBounty(web3, formValues) {
 
     const erc20ContractAddress = contractAddresses.Nitrogen;
 
-    const { geohash, dataCollectionRadius, useType, collectionType, droneType, resolution, fileFormat } = formValues;
+    const { geohash, useType, collectionType, droneType, fileFormat } = formValues;
 
     // TODO: Add extensive data validation of form values.
 
@@ -163,8 +173,8 @@ export function submitBounty(web3, formValues) {
         "geohash": geohash,
         "useType": useType,
         "collectionType": collectionType,
-        "radiusOfCollection": dataCollectionRadius,
-        "resolution": resolution,
+        // "radiusOfCollection": dataCollectionRadius,
+        // "resolution": resolution,
         "fileFormat": fileFormat,
         "droneType": droneType
       }
@@ -179,6 +189,20 @@ export function submitBounty(web3, formValues) {
         return registryContract.methods.submit(bountyDataString).send({ from: accountAddr, gasPrice: price, gas: 1000000 }).then(resolve).catch(reject);
       }).catch(reject);
     }).catch(reject);
+  });
+}
+
+/*
+ * @dev getStakingPoolSize    Gets and returns the stakingPoolSize constant parameter from the Parameterizer (governance contract)
+ * @param web3                Web from Web3Provider injected by Ethereum-enabled browser.
+ */
+export function getStakingPoolSize(web3) {
+  return new Promise((resolve, reject) => {
+    const parameterizerContractAddress = contractAddresses.Parameterizer;
+    const parameterizerContract = new web3.eth.Contract(ParameterizerJSON.abi, parameterizerContractAddress);
+
+    // Get stakingPoolSize parameter from Parameterizer contract
+    return parameterizerContract.methods.get('stakingPoolSize').call().then(resolve).catch(reject);
   });
 }
 

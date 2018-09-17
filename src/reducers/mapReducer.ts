@@ -1,4 +1,5 @@
 import * as types from '../actions/mapActions-types';
+import { BountyFilter } from './dataTypeEnums';
 
 const INITIAL_STATE = {
   // TO-DO: These are London coordinates, the code should allow an empty
@@ -11,7 +12,9 @@ const INITIAL_STATE = {
   selectedBountyToStake: 0, // The ID of the selected bounty (when the staking modal is opened)
   // TODO: These two flags (below) should be abstracted into their own reducers
   bountyStakedSuccessfully: false, // Set to true right after a bounty has just been staked, then reset to false
-  bountySubmittedSuccessfully: false // Set to true right after a bounty has just been added, then reset to false
+  bountySubmittedSuccessfully: false, // Set to true right after a bounty has just been added, then reset to false
+  lastSuccessfulBountyTxnHash: '', // The hash of the last bounty successfully added
+  bountyFilter: BountyFilter.ALL
 };
 
 export default function models(state = INITIAL_STATE, action) {
@@ -50,6 +53,16 @@ export default function models(state = INITIAL_STATE, action) {
       return {
         ...state,
         bountySubmittedSuccessfully: !state.bountySubmittedSuccessfully
+      };
+    case types.SET_BOUNTY_FILTER:
+      return {
+        ...state,
+        bountyFilter: action.bountyFilter
+      };
+    case types.SET_LAST_SUCCESSFUL_BOUNTY_TXN_HASH:
+      return {
+        ...state,
+        lastSuccessfulBountyTxnHash: action.lastSuccessfulBountyTxnHash
       };
     default:
       return state;
