@@ -29,7 +29,8 @@ class Header extends React.Component<IProps> {
 
     console.log('networkName: ', networkName);
 
-    let classBadge= 'badge badge-error';
+    let classbox= 'jr-btn jr-btn-xs jr-btn-default btn btn-default';
+    let styleIcon= 'color:red';
     // let style = styles.unknownCircle
 
     if (networkName !== 'rinkeby' && networkName !== 'main') {
@@ -38,26 +39,26 @@ class Header extends React.Component<IProps> {
 
     if (networkName === 'rinkeby') {
       // style= styles.rinkebyCircle;
-      classBadge= 'badge badge-info';
+      classbox= 'jr-btn jr-btn-xs jr-btn-default btn btn-default';
+      styleIcon= 'color:red';
       networkName = 'Rinkeby Network';
     }
 
     if (networkName === 'main') {
       // style= styles.mainnetCircle;
-      classBadge= 'badge badge-success';
+      classbox= 'jr-btn jr-btn-xs jr-btn-default btn btn-default';
+      styleIcon= 'color:red';
       networkName = 'Main Ethereum Network';
     }
 
     return (
       <div>
-<<<<<<< HEAD
-        <i className="zmdi zmdi-circle zmdi-hc-fw"/>
-        <span className={classBadge}>{networkName}</span>
-
-=======
-        <span className="badge badge-success">Network: {networkName}</span>
-        <li className="list-inline-item user-nav"><button className="jr-btn jr-btn-xs jr-btn-default btn btn-default"><i className="zmdi zmdi-circle zmdi-hc-fw"/> Mainnet Network</button></li>
->>>>>>> feature/get-network-status
+        {/* <span className="badge badge-success">Network: {networkName}</span> */}
+        <li className="list-inline-item user-nav">
+          <button className={classbox}>
+            <i className="zmdi zmdi-circle zmdi-hc-fw" color={styleIcon}/> {networkName}
+          </button>
+        </li>
       </div>
     );
   }

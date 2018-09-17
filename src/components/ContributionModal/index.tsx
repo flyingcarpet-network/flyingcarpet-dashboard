@@ -28,7 +28,7 @@ class AlertModals extends React.Component<IProps> {
 
     return (
       <div className="text-center">
-        <a onClick={toggleStakingDialog}>About</a>
+        <a onClick={toggleStakingDialog}>Staking dialog</a>
         <Modal
           isOpen={showStakingDialog}
           toggle={toggleStakingDialog}>
@@ -40,7 +40,7 @@ class AlertModals extends React.Component<IProps> {
                 value={bountyStakeAmount}
               /><b>NTN</b>
               <br /><br />
-              Please enter the amount of Nitrogen you would like to stake in support of the selected data collection opportunity, 
+              Please enter the amount of Nitrogen you would like to stake in support of the selected data collection opportunity,
               then press the "done" button below. You will then be prompted with two different MetaMask transactions popups.
             </ModalBody>
           }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 // import {NavLink, withRouter} from 'react-router-dom';
-import AboutModal from './../AboutModal';
+// import AboutModal from './../AboutModal';
 // import BountyModal from './../BountyModal';
 
 
@@ -11,7 +11,7 @@ class Menu extends React.Component {
             <div className="app-main-menu d-none d-md-block">
                 <ul className="navbar-nav navbar-nav-mega">
                     <li className="nav-item">
-                      <AboutModal/>
+                      {/* <AboutModal/> */}
                     </li>
                     {/* <li className="nav-item">
                       <BountyModal/>
