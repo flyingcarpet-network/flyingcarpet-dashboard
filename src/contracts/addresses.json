@@ -1,7 +1,7 @@
 {
 	"contracts": {
-		"Registry": "0x5c92892a72812c79871b5294efe067519f04a445",
-		"Nitrogen": "0xb0e2931d33c52b99825933737644211ccefb081b",
-		"StandardBounties": "0xe6ceb9313f5d21da736f797bc7ded826307b55a8"
+		"Registry": "0x5e5bd73c56847e2863c5fa4b78efd5cfc94ade81",
+		"Nitrogen": "0x162688a731137b4eccec0947eb21374255181cd7",
+		"StandardBounties": "0xb70afa4502ac99ab08796a59b2408c52c5ac5885"
 	}
 }
