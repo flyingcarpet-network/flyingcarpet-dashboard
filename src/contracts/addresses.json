@@ -2,6 +2,7 @@
 	"contracts": {
 		"Registry": "0x5c92892a72812c79871b5294efe067519f04a445",
 		"Nitrogen": "0xb0e2931d33c52b99825933737644211ccefb081b",
-		"StandardBounties": "0xe6ceb9313f5d21da736f797bc7ded826307b55a8"
+		"StandardBounties": "0xe6ceb9313f5d21da736f797bc7ded826307b55a8",
+		"Parameterizer": "0x8c1198b435daac7faae3004128f3cc6107e51d25"
 	}
 }
