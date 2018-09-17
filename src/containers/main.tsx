@@ -1,20 +1,33 @@
 import * as React from 'react';
 import {isIOS, isMobile} from 'react-device-detect';
+import {Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
 import BountyCreationPanel from './../components/BountyCreationPanel';
 import BountyStatusFilter from './../components/BountyStatusFilter';
 // import Footer from './../components/Footer';
 import Header from './../components/Header/index';
 import BountyMap from './../components/Map';
 
-class Main extends React.Component {
+interface IState {
+  dropdownOpen: boolean;
+}
+
+class Main extends React.Component<IState> {
+
+  public state = {
+    dropdownOpen: false
+  }
 
   public render() {
+
+    const { dropdownOpen } = this.state;
+
     // set default height and overflow for iOS mobile Safari 10+ support.
     if (isIOS && isMobile) {
         document.body.classList.add('ios-mobile-view-height')
     } else if (document.body.classList.contains('ios-mobile-view-height')) {
         document.body.classList.remove('ios-mobile-view-height')
     }
+
     return (
       <div className="app-main">
         <div className="app-container">
@@ -26,15 +39,29 @@ class Main extends React.Component {
               <div className="app-main-content">
                 <div className="app-wrapper">
                   <div className="row">
-                      <div className="col-sm-4 col-md-4 col-lg-3 col-12 pull-right" style={{zIndex: 90}}>
-                        <BountyStatusFilter />
-                      </div>
-                  </div>
-                  <div className="row"/>
-                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" />
-                  <div className="row">
-                      <div className="col-sm-4 col-md-4 col-lg-3 col-12">
+                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
                         <BountyCreationPanel />
+                      </div>
+                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
+                        <BountyStatusFilter />
+                        <div className="text-center">
+                          <Dropdown
+                              isOpen={dropdownOpen}
+                              toggle={this.toggle}>
+                              <DropdownToggle color="primary">
+                                  Bounty status
+                              </DropdownToggle>
+                              <DropdownMenu>
+                                  <DropdownItem>
+                                    Header
+                                  </DropdownItem>
+                                  <DropdownItem >Action</DropdownItem>
+                                  <DropdownItem>Another Action</DropdownItem>
+                                  <DropdownItem />
+                                  <DropdownItem>Another Action</DropdownItem>
+                              </DropdownMenu>
+                          </Dropdown>
+                      </div>
                       </div>
                       <BountyMap />
                   </div>
@@ -47,6 +74,13 @@ class Main extends React.Component {
       </div>
     );
   }
+
+  private toggle = () => {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
+  }
+
 }
 
 export default Main;
