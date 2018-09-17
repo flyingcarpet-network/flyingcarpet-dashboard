@@ -37,6 +37,9 @@ class Header extends React.Component {
               <li className="list-inline-item user-nav">
                 <NTNBalance />
               </li>
+              <li className="list-inline-item user-nav">
+                <button className="jr-btn jr-flat-btn btn btn-default"><i className="zmdi zmdi-shopping-basket zmdi-hc-fw "/></button>
+              </li>
           </ul>
         </div>
       </div>

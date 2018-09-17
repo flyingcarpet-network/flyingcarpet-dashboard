@@ -50,9 +50,14 @@ class Header extends React.Component<IProps> {
 
     return (
       <div>
+<<<<<<< HEAD
         <i className="zmdi zmdi-circle zmdi-hc-fw"/>
         <span className={classBadge}>{networkName}</span>
 
+=======
+        <span className="badge badge-success">Network: {networkName}</span>
+        <li className="list-inline-item user-nav"><button className="jr-btn jr-btn-xs jr-btn-default btn btn-default"><i className="zmdi zmdi-circle zmdi-hc-fw"/> Mainnet Network</button></li>
+>>>>>>> feature/get-network-status
       </div>
     );
   }
