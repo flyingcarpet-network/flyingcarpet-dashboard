@@ -7,11 +7,12 @@ import { Field, reduxForm } from 'redux-form';
 export interface IProps {
   handleSubmit: () => any;
   formData: any;
+  error: any;
 }
 
 class Form extends React.Component<IProps> {
   public render() {
-    const { handleSubmit, formData } = this.props;
+    const { handleSubmit, formData, error } = this.props;
 
     return (
       <div>
@@ -31,6 +32,7 @@ class Form extends React.Component<IProps> {
                       component="input"
                       type="string"
                       placeholder="Click The Map"
+                      style={error ? { border: '2px solid red' } : {}}
                     />
                   </div>
                   <div className="form-group">
@@ -79,6 +81,7 @@ class Form extends React.Component<IProps> {
                       <option value="h.264">H.264</option>
                     </Field>
                   </div>
+                  {error && <strong>{error}</strong>}
                   <button
                     type="submit"
                     className="jr-btn jr-btn-secondary text-uppercase btn-block btn btn-default">
