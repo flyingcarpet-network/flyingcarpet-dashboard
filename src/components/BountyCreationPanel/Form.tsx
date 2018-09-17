@@ -36,6 +36,17 @@ class Form extends React.Component<IProps> {
                     />
                   </div>
                   <div className="form-group">
+                    <label>Coordinates</label>
+                    <Field
+                      name="coordinates"
+                      class="form-control"
+                      component="input"
+                      type="string"
+                      placeholder="Click The Map"
+                      style={error ? { border: '2px solid red' } : {}}
+                    />
+                  </div>
+                  <div className="form-group">
                     <label>Type</label>
                     <Field
                         name="useType"

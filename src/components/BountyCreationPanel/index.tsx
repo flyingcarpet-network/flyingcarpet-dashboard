@@ -16,11 +16,12 @@ export interface IProps {
   setGeohash: (newGeohash: string) => any;
   toggleBountySubmissionSuccessfully: () => any;
   bountySubmittedSuccessfully: boolean;
+  setCoordinates: (newCoordinates: string) => any;
 }
 
 class BountyCreationPanel extends React.Component<IProps> {
   public componentDidUpdate() {
-    const { formData, setGeohash } = this.props;
+    const { formData, setGeohash, setCoordinates } = this.props;
 
     let geohashInputValue = '';
     // Only access current geohash if it is in fact set (not undefined)
@@ -35,6 +36,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     // update the input to contain the new geohash
     if (newGeohash !== geohashInputValue) {
       setGeohash(newGeohash);
+      setCoordinates(this.getCoordinatesString(newGeohash));
     }
   }
   public render() {
@@ -56,6 +58,10 @@ class BountyCreationPanel extends React.Component<IProps> {
 
     if (!mapClickLocation.lat || !mapClickLocation.lng) { return ''; }
     return Geohash.encode(mapClickLocation.lat, mapClickLocation.lng);
+  }
+  private getCoordinatesString(geohash) {
+    const coordinatesObj = Geohash.decode(geohash);
+    return coordinatesObj.lat + ", " + coordinatesObj.lon;
   }
   private formSubmit = values => {
     const { web3, toggleBountySubmissionSuccessfully } = this.props;
@@ -86,7 +92,8 @@ export default compose<any>(
     dispatch => ({
       toggleBountySubmissionSuccessfully: bindActionCreators(mapActions.toggleBountySubmissionSuccessfully, dispatch),
       // Dispatches redux-form action
-      setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash))
+      setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash)),
+      setCoordinates: (newCoordinates: string) => dispatch(change('bountyCreationPanel', 'coordinates', newCoordinates)),
     })
   ),
   withWeb3
