@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {isIOS, isMobile} from 'react-device-detect';
-import { connect } from 'react-redux';
 import BountyCreationPanel from './../components/BountyCreationPanel';
+import BountyStatusFilter from './../components/BountyStatusFilter';
 // import Footer from './../components/Footer';
 import Header from './../components/Header/index';
 import BountyMap from './../components/Map';
@@ -29,6 +29,9 @@ class Main extends React.Component {
                       <div className="col-sm-4 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
                         <BountyCreationPanel />
                       </div>
+                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
+                        <BountyStatusFilter />
+                      </div>
                       <BountyMap />
                   </div>
                 </div>
@@ -42,6 +45,4 @@ class Main extends React.Component {
   }
 }
 
-export default connect(() => ({
-}), dispatch => ({
-}))(Main);
+export default Main;

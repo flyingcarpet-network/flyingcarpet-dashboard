@@ -8,6 +8,7 @@ import * as mapActions from '../../actions/mapActions';
 import * as modalsActions from '../../actions/modalsActions';
 import * as tcroActions from '../../actions/tcroActions';
 import { MAPBOX_ACCESS_TOKEN } from '../../constants';
+import { BountyFilter } from '../../reducers/dataTypeEnums';
 import * as Web3Utils from '../../utils/web3-utils';
 import ContributionModal from './../ContributionModal';
 
@@ -40,6 +41,7 @@ export interface IProps {
   setSelectedBountyToStake: (bountyID: number) => any;
   setStakingPoolSize: (size: number) => any;
   stakingPoolSize: number;
+  bountyFilter: BountyFilter;
 }
 
 const layerPaint = {
@@ -92,6 +94,19 @@ class BountyMap extends React.Component<IProps> {
   public render() {
     const { center, mapInit, zoom, bounties, stakingPoolSize } = this.props;
 
+    // Due to some odd behavior from the MapBox Layer component, we have to construct the array of bounty
+    // feature elements beforehand and then pass the array as children to the Layer component.
+    const layerFeatures: JSX.Element[] = [];
+    bounties.map((bounty: any, index: number) => {
+      // Filter bounties by bounty filters (active/inactive/complete)
+      if (this.filterBounty(bounty.balance)) {
+        layerFeatures.push(<Feature
+          key={index}
+          coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
+        />);
+      }
+    })
+
     return (
       <div>
           <ContributionModal />
@@ -105,33 +120,32 @@ class BountyMap extends React.Component<IProps> {
                 zoom={zoom}
                 onClick={this.recordMapClick}
               >
-                <Layer type="heatmap" paint={layerPaint as any}>
-                  {bounties.map((bounty: any, index: number) => (
-                    <Feature
-                      key={index}
-                      coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
-                    />
-                  ))}
-                </Layer>
+                <Layer type="heatmap" paint={layerPaint as any} children={layerFeatures} />
                 <div>
-                  {bounties.map((bounty: any, index: number) => (
-                    <Marker
-                      key={index}
-                      coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
-                      onClick={this.markerClick.bind(this, bounty.bountyID)}
-                    >
-                      <div>
-                        {(Number(bounty.balance) < Number(stakingPoolSize)) && // Show the amount staked against inactive bounties (not funded yet)
-                          (bounty.balance + " NTN")}
-                        {(Number(bounty.balance) >= Number(stakingPoolSize)) && // Active bounty (ready to be fulfilled)
-                          <img alt="" src="https://www.mapbox.com/help/img/interactive-tools/custom_marker.png" />
-                        }
-                        {(Number(bounty.balance) < Number(stakingPoolSize)) && // Inactive bounty (still waiting to be fully funded)
-                          <img alt="" src="https://www.att.com/stores/permanent-b0b701/assets/images/logo.cd79c1f9.png" />
-                        }
-                      </div>
-                    </Marker>
-                  ))}
+                  {bounties.map((bounty: any, index: number) => {
+                    // Filter bounties by bounty filters (active/inactive/complete)
+                    if (this.filterBounty(bounty.balance)) {
+                      return (
+                        <Marker
+                          key={index}
+                          coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
+                          onClick={this.markerClick.bind(this, bounty.bountyID)}
+                        >
+                            <div>
+                              {(Number(bounty.balance) < Number(stakingPoolSize)) && // Show the amount staked against inactive bounties (not funded yet)
+                                (bounty.balance + " NTN")}
+                              {(bounty.balance >= stakingPoolSize) && // Active bounty (ready to be fulfilled)
+                                <img alt="" src="https://www.mapbox.com/help/img/interactive-tools/custom_marker.png" />
+                              }
+                              {(bounty.balance < stakingPoolSize) && // Inactive bounty (still waiting to be fully funded)
+                                <img alt="" src="https://www.att.com/stores/permanent-b0b701/assets/images/logo.cd79c1f9.png" />
+                              }
+                            </div>
+                        </Marker>
+                      );
+                    }
+                    return;
+                  })}
                 </div>
               </Map>
             </div>
@@ -150,6 +164,21 @@ class BountyMap extends React.Component<IProps> {
     toggleStakingDialog(); // Open staking modal
     setSelectedBountyToStake(bountyID); // Set bounty ID of currently clicked bounty
   }
+  /*
+   * This function is used to filter bounties on the map based on the filter selected by the user
+   */
+  private filterBounty = (bountyBalance: number): boolean => {
+    const { bountyFilter, stakingPoolSize } = this.props;
+
+    switch (String(bountyFilter)) {
+      case String(BountyFilter.INACTIVE):
+        return (bountyBalance < stakingPoolSize);
+      case String(BountyFilter.ACTIVE):
+        return (bountyBalance >= stakingPoolSize);
+      default:
+        return true; // By default (including ALL case), we show all bounties on the map
+    }
+  }
 }
 
 export default compose<any>(
@@ -157,7 +186,8 @@ export default compose<any>(
     state => ({
       bounties: state.tcro.bounties,
       center: state.map.center,
-      stakingPoolSize: state.tcro.stakingPoolSize
+      stakingPoolSize: state.tcro.stakingPoolSize,
+      bountyFilter: state.map.bountyFilter
     }),
     dispatch => ({
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch),

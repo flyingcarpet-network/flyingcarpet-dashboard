@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
 import { bindActionCreators, compose } from 'redux';
-import { change } from 'redux-form';
+import { change, SubmissionError } from 'redux-form';
 import * as mapActions from '../../actions/mapActions';
 import * as tcroActions from '../../actions/tcroActions';
 import * as Web3Utils from '../../utils/web3-utils';
@@ -61,6 +61,12 @@ class BountyCreationPanel extends React.Component<IProps> {
   }
   private formSubmit = values => {
     const { web3, toggleBountySubmissionSuccessfully, setBounties } = this.props;
+
+    // Validate that a geohash string is being submitted, otherwise provide an error to the user
+    if (!values.geohash || values.geohash.length === 0) {
+      throw new SubmissionError({ _error: 'Please select a location for your bounty on the map.' });
+      return;
+    }
 
     // TODO: Save/return the resulting transaction hash from successful transactions
     return Web3Utils.submitBounty(web3, values).then(() => {
