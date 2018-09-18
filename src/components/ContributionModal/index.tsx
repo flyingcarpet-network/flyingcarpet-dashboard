@@ -42,8 +42,7 @@ class AlertModals extends React.Component<IProps> {
                   <input type="text"
                     className="form-control"
                     onChange={this.onChange}
-                    value={bountyStakeAmount}
-                    placeholder="First name"/></div>
+                    value={bountyStakeAmount}/></div>
                 <button className="jr-btn jr-flat-btn jr-btn-primary jr-btn-sm btn btn-default">NTN</button>
               </div>
               Please enter the amount of Nitrogen you would like to stake in support of the selected data collection opportunity,

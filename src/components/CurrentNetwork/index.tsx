@@ -40,14 +40,14 @@ class Header extends React.Component<IProps> {
     if (networkName === 'rinkeby') {
       // style= styles.rinkebyCircle;
       classbox= 'jr-btn jr-btn-xs jr-btn-primary btn btn-default';
-      styleIcon= 'red';
+      styleIcon= 'orange';
       networkName = 'Rinkeby Network';
     }
 
     if (networkName === 'main') {
       // style= styles.mainnetCircle;
       classbox= 'jr-btn jr-btn-xs jr-btn-primary btn btn-default';
-      styleIcon= 'red';
+      styleIcon= 'green';
       networkName = 'Main Ethereum Network';
     }
 
