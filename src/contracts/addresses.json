@@ -1,8 +1,18 @@
 {
-	"contracts": {
-		"Registry": "0x5c92892a72812c79871b5294efe067519f04a445",
-		"Nitrogen": "0xb0e2931d33c52b99825933737644211ccefb081b",
-		"StandardBounties": "0xe6ceb9313f5d21da736f797bc7ded826307b55a8",
-		"Parameterizer": "0x8c1198b435daac7faae3004128f3cc6107e51d25"
+	"rinkeby": {
+		"contracts": {
+			"Registry": "0xae02f78d93dedafff0dcfbb374a5e154ead25d73",
+			"Nitrogen": "0xf17a2d08363f483e2482a2c69373e110f6fd241f",
+			"StandardBounties": "0xc6c0bfd1f6dcd03022c3871dc55c1a29d6692dd1",
+			"Parameterizer": "0x4fba87ddae911cb9b099414eb541c223777907d1"
+		}
+	},
+	"private": {
+		"contracts": {
+			"Registry": "0xae02f78d93dedafff0dcfbb374a5e154ead25d73",
+			"Nitrogen": "0xf17a2d08363f483e2482a2c69373e110f6fd241f",
+			"StandardBounties": "0xc6c0bfd1f6dcd03022c3871dc55c1a29d6692dd1",
+			"Parameterizer": "0x4fba87ddae911cb9b099414eb541c223777907d1"
+		}
 	}
 }

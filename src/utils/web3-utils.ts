@@ -8,7 +8,10 @@ const RegistryJSON = require('./../contracts/abi/Registry.json');
 const StandardBountiesJSON = require('./../contracts/abi/StandardBountiesInterface.json');
 const ParameterizerJSON = require('./../contracts/abi/Parameterizer.json');
 const addresses = require('./../contracts/addresses.json');
-const contractAddresses = addresses.contracts;
+// TODO: Make the different methods that use the address automatically
+//       detect network using the Redux networkName varibale.
+//       For now, we'll just manually set the network: (e.g. "rinkeby", "private", etc.):
+const contractAddresses = addresses.rinkeby.contracts;
 
 /*
  * @dev isAnyUnlockedAccount  Resolves if provider has at least one unlocked account. Rejects otherwise.
@@ -134,7 +137,7 @@ export function contributeToBounty(web3: any, bountyID: number, amountToken: num
         // Get current gas price
         return web3.eth.getGasPrice().then((price: number) => {
           // Contribute to bounty
-          return bountiesContract.methods.contribute(bountyID, amountToken).send({ from: accountAddr, gasPrice: price, gas: 100000 }).then(resolve).catch(reject);
+          return bountiesContract.methods.contribute(bountyID, amountToken).send({ from: accountAddr, gasPrice: price, gas: 250000 }).then(resolve).catch(reject);
         }).catch(reject);
       }).catch(reject);
     }).catch(reject);
@@ -185,8 +188,9 @@ export function submitBounty(web3, formValues) {
     return getDefaultAccount(web3).then((accountAddr: any) => {
       // Get current gas price
       return web3.eth.getGasPrice().then((price: number) => {
+        console.log(price);
         // Submit new bounty 
-        return registryContract.methods.submit(bountyDataString).send({ from: accountAddr, gasPrice: price, gas: 1000000 }).then(resolve).catch(reject);
+        return registryContract.methods.submit(bountyDataString).send({ from: accountAddr, gasPrice: price, gas: 2500000 }).then(resolve).catch(reject);
       }).catch(reject);
     }).catch(reject);
   });
