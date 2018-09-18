@@ -13,7 +13,7 @@ export default class App extends React.Component {
   public render() {
     return(
       <Web3Provider
-        loading="Loading..."
+        loading="Loading... Please ensure you have MetaMask installed"
         error={this.handleError}
       >
         <Provider store={store}>

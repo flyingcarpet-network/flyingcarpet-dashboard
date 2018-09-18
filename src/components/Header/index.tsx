@@ -28,7 +28,7 @@ class Header extends React.Component {
           <div><Menu/></div>
 
           <ul className="header-notifications list-inline ml-auto">
-              <li className="d-inline-block d-lg-none list-inline-item">
+              <li className="list-inline-item user-nav">
                 <Web3Status />
               </li>
               <li className="list-inline-item user-nav">

@@ -24,7 +24,7 @@ class Header extends React.Component<IProps> {
   public render() {
     return (
       <div>
-        {this.determineWeb3StatusMessage()}
+        <button className="jr-btn jr-btn-xs jr-btn-primary btn btn-default">{this.determineWeb3StatusMessage()}</button>
       </div>
     );
   }
