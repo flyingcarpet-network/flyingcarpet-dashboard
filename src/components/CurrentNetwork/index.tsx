@@ -53,7 +53,6 @@ class Header extends React.Component<IProps> {
 
     return (
       <div>
-        {/* <span className="badge badge-success">Network: {networkName}</span> */}
         <li className="list-inline-item user-nav">
           <button className={classbox}>
             <i className="zmdi zmdi-circle zmdi-hc-fw" style={{color:styleIcon}}/> {networkName}

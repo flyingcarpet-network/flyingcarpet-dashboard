@@ -10,9 +10,7 @@ class Menu extends React.Component {
         return (
             <div className="app-main-menu d-none d-md-block">
                 <ul className="navbar-nav navbar-nav-mega">
-                    <li className="nav-item">
-                      {/* <AboutModal/> */}
-                    </li>
+                    
                     {/* <li className="nav-item">
                       <BountyModal/>
                     </li>
