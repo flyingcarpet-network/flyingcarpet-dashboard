@@ -19,6 +19,8 @@ export interface IProps {
   bountySubmittedSuccessfully: boolean;
   setCoordinates: (newCoordinates: string) => any;
   setBounties: (bounties: any) => any;
+  lastSuccessfulBountyTxnHash: string;
+  setLastSuccessfulBountyTxnHash: (hash: string) => any;
 }
 
 class BountyCreationPanel extends React.Component<IProps> {
@@ -42,7 +44,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     }
   }
   public render() {
-    const { bountySubmittedSuccessfully } = this.props;
+    const { bountySubmittedSuccessfully, lastSuccessfulBountyTxnHash } = this.props;
 
     return (
       <div>
@@ -50,7 +52,7 @@ class BountyCreationPanel extends React.Component<IProps> {
             <Form onSubmit={this.formSubmit} />
           }
           {bountySubmittedSuccessfully &&
-            <div>Bounty successfully submitted to the TCRO!</div>
+            <div>Bounty successfully submitted to the TCRO!<br />You can view the transaction on <a href={"https://rinkeby.etherscan.io/tx/" + lastSuccessfulBountyTxnHash} target="_blank">EtherScan</a>.</div>
           }
       </div>
     );
@@ -66,7 +68,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     return coordinatesObj.lat + ", " + coordinatesObj.lon;
   }
   private formSubmit = values => {
-    const { web3, toggleBountySubmissionSuccessfully, setBounties } = this.props;
+    const { web3, toggleBountySubmissionSuccessfully, setBounties, setLastSuccessfulBountyTxnHash } = this.props;
 
     // Validate that a geohash string is being submitted, otherwise provide an error to the user
     if (!values.geohash || values.geohash.length === 0) {
@@ -81,13 +83,15 @@ class BountyCreationPanel extends React.Component<IProps> {
     }
 
     // TODO: Save/return the resulting transaction hash from successful transactions
-    return Web3Utils.submitBounty(web3, values).then(() => {
+    return Web3Utils.submitBounty(web3, values).then(res => {
       // Show sucess message
       toggleBountySubmissionSuccessfully();
       // Switch back to creation dialog in 10 seconds
       setTimeout(toggleBountySubmissionSuccessfully, 10000);
       // Reload map bounties
       Web3Utils.getBounties(web3).then(setBounties).catch(err => { console.error('Unable to load bounties!'); console.error(err); });
+      // Set hash of successful bounty
+      setLastSuccessfulBountyTxnHash((res as any).transactionHash);
     }).catch(console.error);
   }
 }
@@ -97,14 +101,16 @@ export default compose<any>(
     state => ({
       mapClickLocation: state.map.mapClickLocation,
       formData: state.form.bountyCreationPanel,
-      bountySubmittedSuccessfully: state.map.bountySubmittedSuccessfully
+      bountySubmittedSuccessfully: state.map.bountySubmittedSuccessfully,
+      lastSuccessfulBountyTxnHash: state.map.lastSuccessfulBountyTxnHash
     }),
     dispatch => ({
       toggleBountySubmissionSuccessfully: bindActionCreators(mapActions.toggleBountySubmissionSuccessfully, dispatch),
       // Dispatches redux-form action
       setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash)),
       setCoordinates: (newCoordinates: string) => dispatch(change('bountyCreationPanel', 'coordinates', newCoordinates)),
-      setBounties: bindActionCreators(tcroActions.setBounties, dispatch)
+      setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
+      setLastSuccessfulBountyTxnHash: bindActionCreators(mapActions.setLastSuccessfulBountyTxnHash, dispatch)
     })
   ),
   withWeb3
