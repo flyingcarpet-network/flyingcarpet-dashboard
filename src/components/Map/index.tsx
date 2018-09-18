@@ -129,7 +129,7 @@ class BountyMap extends React.Component<IProps> {
                         <Marker
                           key={index}
                           coordinates={[bounty.coordinates.lon, bounty.coordinates.lat]}
-                          onClick={this.markerClick.bind(this, bounty.bountyID)}
+                          onClick={this.markerClick.bind(this, bounty)}
                         >
                             <div>
                               {(Number(bounty.balance) < Number(stakingPoolSize)) && // Show the amount staked against inactive bounties (not funded yet)
@@ -158,11 +158,14 @@ class BountyMap extends React.Component<IProps> {
 
     setMapClickLocation(data.lngLat);
   }
-  private markerClick = (bountyID: number) => {
-    const { toggleStakingDialog, setSelectedBountyToStake } = this.props;
+  private markerClick = (bounty: any) => {
+    const { toggleStakingDialog, setSelectedBountyToStake, stakingPoolSize } = this.props;
 
-    toggleStakingDialog(); // Open staking modal
-    setSelectedBountyToStake(bountyID); // Set bounty ID of currently clicked bounty
+    // Only allow staking dialog to be opened if clicked an inactive (unfunded bounty)
+    if (Number(bounty.balance) < Number(stakingPoolSize)) {
+      toggleStakingDialog(); // Open staking modal
+      setSelectedBountyToStake(bounty.bountyID); // Set bounty ID of currently clicked bounty
+    }
   }
   /*
    * This function is used to filter bounties on the map based on the filter selected by the user
