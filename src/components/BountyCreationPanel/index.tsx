@@ -54,13 +54,55 @@ class BountyCreationPanel extends React.Component<IProps> {
             <Form onSubmit={this.formSubmit} />
           }
           {(bountySubmissionTxnState === TxnStates.PENDING) &&
-            <div>Bounty submission successfully added to block!<br />See the transaction pending here: <a href={"https://rinkeby.etherscan.io/tx/" + lastSuccessfulBountyTxnHash} target="_blank">EtherScan</a>.</div>
+            <div className="jr-card ">
+              <div className="jr-card-header">
+                <h3 className="card-heading">
+                  <span>Bounty submission successfully</span>
+                </h3>
+              </div>
+              <div className="jr-card-body d-flex justify-content-center">
+                <div>
+                  <span>See the transaction pending here: <a href={"https://rinkeby.etherscan.io/tx/" + lastSuccessfulBountyTxnHash} target="_blank">EtherScan</a></span>
+                  <span className="icon-btn" id="tooltip-add">
+                    <i className="zmdi zmdi-mood"/>
+                  </span>
+                </div>
+              </div>
+            </div>
           }
           {(bountySubmissionTxnState === TxnStates.SUBMITTED) &&
-            <div>Submission transaction processing... Please wait... (May take as long as 15 seconds to be added to a block)</div>
+            <div className="jr-card ">
+              <div className="jr-card-header">
+                <h3 className="card-heading">
+                  <span>Submission transaction processing.</span>
+                </h3>
+              </div>
+              <div className="jr-card-body d-flex justify-content-center">
+                <div>
+                  Please wait... (May take as long as 15 seconds to be added to a block)
+                  <span className="icon-btn" id="tooltip-add">
+                    <i className="zmdi zmdi-alert-triangle"/>
+                  </span>
+                </div>
+              </div>
+            </div>
           }
           {(bountySubmissionTxnState === TxnStates.FAILED) &&
-            <div>Bounty submission failed. Please check that you have enough ETH for gas.</div>
+            <div className="jr-card ">
+              <div className="jr-card-header">
+                <h3 className="card-heading">
+                  <span>Bounty submission failed.</span>
+                </h3>
+              </div>
+              <div className="jr-card-body d-flex justify-content-center">
+                <div>
+                  Please check that you have enough ETH for gas.
+                  <span className="icon-btn" id="tooltip-add">
+                    <i className="zmdi zmdi-mood-bad"/>
+                  </span>
+                </div>
+              </div>
+            </div>
           }
       </div>
     );
