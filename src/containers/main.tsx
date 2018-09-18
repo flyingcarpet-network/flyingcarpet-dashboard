@@ -15,6 +15,7 @@ class Main extends React.Component {
     } else if (document.body.classList.contains('ios-mobile-view-height')) {
         document.body.classList.remove('ios-mobile-view-height')
     }
+
     return (
       <div className="app-main">
         <div className="app-container">
@@ -24,14 +25,10 @@ class Main extends React.Component {
             </div>
             <main className="app-main-content-wrapper">
               <div className="app-main-content">
+                  <BountyStatusFilter />
                 <div className="app-wrapper">
                   <div className="row">
-                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
-                        <BountyCreationPanel />
-                      </div>
-                      <div className="col-sm-4 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
-                        <BountyStatusFilter />
-                      </div>
+                      <BountyCreationPanel />
                       <BountyMap />
                   </div>
                 </div>

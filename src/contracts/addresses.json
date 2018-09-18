@@ -9,10 +9,10 @@
 	},
 	"private": {
 		"contracts": {
-			"Registry": "0xe39e1aacdbfaef5adacdcbc63fc58d4ad6abc80e",
-			"Nitrogen": "0x9fa9e7c079f51bdc0a5d01e33c1e89d75db139ad",
-			"StandardBounties": "0x519eb7e552cb7ec0f46d2d90e0836eeb7af075fb",
-			"Parameterizer": "0x90cafb308973776314a50765f57eb3b42a87a01a"
+			"Registry": "0x3eda927c2468accbd2ca9a5fec1ba0e39daf3dcd",
+			"Nitrogen": "0x2e1ebb710be7516f22b0991b5495cea3ee448cf0",
+			"StandardBounties": "0x8c672f793057175907da96a85e50b88ab9976fa2",
+			"Parameterizer": "0x0262667b29342f0c970ca67bce21d4dd2d4bbf3b"
 		}
 	}
 }

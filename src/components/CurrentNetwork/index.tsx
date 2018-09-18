@@ -2,8 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
 import { bindActionCreators, compose } from 'redux';
+// import styles from './CurrentNetwork.scss';
 import * as web3Actions from '../../actions/web3Actions';
 import * as Web3Utils from '../../utils/web3-utils';
+
 
 export interface IProps {
   web3: any;
@@ -23,11 +25,39 @@ class Header extends React.Component<IProps> {
   }
 
   public render() {
-    const { networkName } = this.props;
+    let { networkName } = this.props;
+
+    console.log('networkName: ', networkName);
+
+    let classbox= 'jr-btn jr-btn-xs jr-btn-primary btn btn-default';
+    let styleIcon= 'red';
+    // let style = styles.unknownCircle
+
+    if (networkName !== 'rinkeby' && networkName !== 'main') {
+      networkName = 'Unknown Network';
+    }
+
+    if (networkName === 'rinkeby') {
+      // style= styles.rinkebyCircle;
+      classbox= 'jr-btn jr-btn-xs jr-btn-primary btn btn-default';
+      styleIcon= 'red';
+      networkName = 'Rinkeby Network';
+    }
+
+    if (networkName === 'main') {
+      // style= styles.mainnetCircle;
+      classbox= 'jr-btn jr-btn-xs jr-btn-primary btn btn-default';
+      styleIcon= 'red';
+      networkName = 'Main Ethereum Network';
+    }
 
     return (
       <div>
-        <span className="badge badge-success">Network: {networkName}</span>
+        <li className="list-inline-item user-nav">
+          <button className={classbox}>
+            <i className="zmdi zmdi-circle zmdi-hc-fw" style={{color:styleIcon}}/> {networkName}
+          </button>
+        </li>
       </div>
     );
   }

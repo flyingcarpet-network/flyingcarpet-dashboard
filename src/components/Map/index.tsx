@@ -137,8 +137,8 @@ class BountyMap extends React.Component<IProps> {
                               {(Number(bounty.balance) >= Number(stakingPoolSize)) && // Active bounty (ready to be fulfilled)
                                 <img alt="" src="https://www.mapbox.com/help/img/interactive-tools/custom_marker.png" />
                               }
-                              {(Number(bounty.balance) < Number(stakingPoolSize)) && // Inactive bounty (still waiting to be fully funded)
-                                <img alt="" src="https://www.att.com/stores/permanent-b0b701/assets/images/logo.cd79c1f9.png" />
+                              {(bounty.balance < stakingPoolSize) && // Inactive bounty (still waiting to be fully funded)
+                                <img alt="" src="https://www.mapbox.com/help/data/examples/marker-editor.svg" />
                               }
                             </div>
                         </Marker>

@@ -28,19 +28,24 @@ class AlertModals extends React.Component<IProps> {
 
     return (
       <div className="text-center">
-        <a onClick={toggleStakingDialog}>About</a>
+        <a onClick={toggleStakingDialog}>Staking dialog</a>
         <Modal
           isOpen={showStakingDialog}
           toggle={toggleStakingDialog}>
           <ModalHeader>Stake This Opportunity</ModalHeader>
           {(!bountyStakedSuccessfully) &&
             <ModalBody>
-              <b>Nitrogen to stake: </b><input
-                onChange={this.onChange}
-                value={bountyStakeAmount}
-              /><b>NTN</b>
-              <br /><br />
-              Please enter the amount of Nitrogen you would like to stake in support of the selected data collection opportunity, 
+            <div className="jr-card-header"><div className="sub-heading">Nitrogen to stake:</div></div>
+              <div className="form-row">
+                <div className="col">
+                  <input type="text"
+                    className="form-control"
+                    onChange={this.onChange}
+                    value={bountyStakeAmount}
+                    placeholder="First name"/></div>
+                <button className="jr-btn jr-flat-btn jr-btn-primary jr-btn-sm btn btn-default">NTN</button>
+              </div>
+              Please enter the amount of Nitrogen you would like to stake in support of the selected data collection opportunity,
               then press the "done" button below. You will then be prompted with two different MetaMask transactions popups.
             </ModalBody>
           }
@@ -51,19 +56,22 @@ class AlertModals extends React.Component<IProps> {
               You can view the transaction on <a href={"https://rinkeby.etherscan.io/tx/" + lastSuccessfulBountyTxnHash} target="_blank">EtherScan</a>.
             </ModalBody>
           }
+
           <ModalFooter>
-            <Button
-              color="primary"
-              onClick={this.contributeToBounty}
-            >
-              Done
-            </Button>
-            {' '}
-            <Button color="secondary"
-              onClick={toggleStakingDialog}
-            >
-              Cancel
-            </Button>
+            <div className="jr-btn-group">
+              <Button
+                className="jr-btn btn-primary btn btn-success"
+                onClick={this.contributeToBounty}
+              >
+                Done
+              </Button>
+              {' '}
+              <Button className="jr-btn btn-primary btn btn-default"
+                onClick={toggleStakingDialog}
+              >
+                Cancel
+              </Button>
+            </div>
           </ModalFooter>
         </Modal>
       </div>

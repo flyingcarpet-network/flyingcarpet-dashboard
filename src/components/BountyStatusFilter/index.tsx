@@ -10,16 +10,23 @@ export interface IProps {
 }
 
 class BountyCreationPanel extends React.Component<IProps> {
+
   public render() {
     const { bountyFilter } = this.props;
 
     return (
-      <select id="lang" onChange={this.selectChange} value={bountyFilter}>
-        <option value={BountyFilter.ALL}>All</option>
-        <option value={BountyFilter.INACTIVE}>Inactive (unfunded)</option>
-        <option value={BountyFilter.ACTIVE}>Active (funded)</option>
-        <option value={BountyFilter.COMPLETE} disabled={true}>Complete (Coming Soon)</option>
-      </select>
+      <div className="row">
+        <div className="col-sm-9 col-md-9 col-lg-10"/>
+        <div className="col-sm-2 col-md-2 col-lg-1" style={{zIndex: 90, marginTop: 14,marginBottom: -17}}>
+          <select id="lang" className="form-control jr-btn jr-btn-xs jr-btn-primary btn btn-default" onChange={this.selectChange} value={bountyFilter} style={{fontSize: 10}}>
+            <option value={BountyFilter.ALL}>Bounties</option>
+            <option value={BountyFilter.INACTIVE}>Inactive (unfunded)</option>
+            <option value={BountyFilter.ACTIVE}>Active (funded)</option>
+            <option value={BountyFilter.COMPLETE} disabled={true}>Complete (Coming Soon)</option>
+          </select>
+        </div>
+        <div className="col-sm-1 col-md-1 col-lg-1"/>
+      </div>
     );
   }
   private selectChange = event => {
