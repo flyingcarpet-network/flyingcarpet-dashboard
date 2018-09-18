@@ -9,3 +9,13 @@ export enum BountyFilter {
   ACTIVE,
   COMPLETE
 };
+
+/* Transaction processing states */
+export enum TxnStates {
+  DEFAULT, // No transaction currently - empty
+  SUBMITTED,
+  PENDING,
+  COMPLETE,
+  FAILED
+};
+

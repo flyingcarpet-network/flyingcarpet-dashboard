@@ -6,6 +6,7 @@ import { bindActionCreators, compose } from 'redux';
 import { change, SubmissionError } from 'redux-form';
 import * as mapActions from '../../actions/mapActions';
 import * as tcroActions from '../../actions/tcroActions';
+import { TxnStates } from '../../reducers/dataTypeEnums';
 import * as Web3Utils from '../../utils/web3-utils';
 import Form from './Form';
 
@@ -15,8 +16,8 @@ export interface IProps {
   mapClickLocation: {lat: number, lng: number};
   formData: any;
   setGeohash: (newGeohash: string) => any;
-  toggleBountySubmissionSuccessfully: () => any;
-  bountySubmittedSuccessfully: boolean;
+  setBountySubmissionTxnState: (state: TxnStates) => any;
+  bountySubmissionTxnState: TxnStates;
   setCoordinates: (newCoordinates: string) => any;
   setBounties: (bounties: any) => any;
   lastSuccessfulBountyTxnHash: string;
@@ -45,15 +46,21 @@ class BountyCreationPanel extends React.Component<IProps> {
   }
 
   public render() {
-    const { bountySubmittedSuccessfully, lastSuccessfulBountyTxnHash } = this.props;
+    const { bountySubmissionTxnState, lastSuccessfulBountyTxnHash } = this.props;
 
     return (
-      <div className="col-sm-6 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
-          {(!bountySubmittedSuccessfully) &&
+        <div className="col-sm-6 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
+          {(bountySubmissionTxnState === TxnStates.DEFAULT) &&
             <Form onSubmit={this.formSubmit} />
           }
-          {bountySubmittedSuccessfully &&
-            <div>Bounty successfully submitted to the TCRO!<br />You can view the transaction on <a href={"https://rinkeby.etherscan.io/tx/" + lastSuccessfulBountyTxnHash} target="_blank">EtherScan</a>.</div>
+          {(bountySubmissionTxnState === TxnStates.PENDING) &&
+            <div>Bounty submission successfully added to block!<br />See the transaction pending here: <a href={"https://rinkeby.etherscan.io/tx/" + lastSuccessfulBountyTxnHash} target="_blank">EtherScan</a>.</div>
+          }
+          {(bountySubmissionTxnState === TxnStates.SUBMITTED) &&
+            <div>Submission transaction processing... Please wait... (May take as long as 15 seconds to be added to a block)</div>
+          }
+          {(bountySubmissionTxnState === TxnStates.FAILED) &&
+            <div>Bounty submission failed. Please check that you have enough ETH for gas.</div>
           }
       </div>
     );
@@ -69,7 +76,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     return coordinatesObj.lat + ", " + coordinatesObj.lon;
   }
   private formSubmit = values => {
-    const { web3, toggleBountySubmissionSuccessfully, setBounties, setLastSuccessfulBountyTxnHash } = this.props;
+    const { web3, setBountySubmissionTxnState, setBounties, setLastSuccessfulBountyTxnHash } = this.props;
 
     // Validate that a geohash string is being submitted, otherwise provide an error to the user
     if (!values.geohash || values.geohash.length === 0) {
@@ -77,23 +84,26 @@ class BountyCreationPanel extends React.Component<IProps> {
       return;
     }
 
-    // Validate that a geohash string is being submitted, otherwise provide an error to the user
-    if (!values.geohash || values.geohash.length === 0) {
-      throw new SubmissionError({ _error: 'Please select a location for your bounty on the map.' });
-      return;
-    }
-
-    // TODO: Save/return the resulting transaction hash from successful transactions
+    // Show transaction processing
+    setBountySubmissionTxnState(TxnStates.SUBMITTED);
+    // Submit bounty via Web3
     return Web3Utils.submitBounty(web3, values).then(res => {
       // Show sucess message
-      toggleBountySubmissionSuccessfully();
+      setBountySubmissionTxnState(TxnStates.PENDING);
       // Switch back to creation dialog in 10 seconds
-      setTimeout(toggleBountySubmissionSuccessfully, 10000);
+      setTimeout(() => setBountySubmissionTxnState(TxnStates.DEFAULT), 10000);
       // Reload map bounties
       Web3Utils.getBounties(web3).then(setBounties).catch(err => { console.error('Unable to load bounties!'); console.error(err); });
       // Set hash of successful bounty
       setLastSuccessfulBountyTxnHash((res as any).transactionHash);
-    }).catch(console.error);
+    }).catch(err => {
+      // Print error to console
+      console.error(err);
+      // Show failed text
+      setBountySubmissionTxnState(TxnStates.FAILED);
+      // Switch back to creation dialog in 10 seconds
+      setTimeout(() => setBountySubmissionTxnState(TxnStates.DEFAULT), 10000);
+    });
   }
 }
 
@@ -102,11 +112,11 @@ export default compose<any>(
     state => ({
       mapClickLocation: state.map.mapClickLocation,
       formData: state.form.bountyCreationPanel,
-      bountySubmittedSuccessfully: state.map.bountySubmittedSuccessfully,
+      bountySubmissionTxnState: state.map.bountySubmissionTxnState,
       lastSuccessfulBountyTxnHash: state.map.lastSuccessfulBountyTxnHash
     }),
     dispatch => ({
-      toggleBountySubmissionSuccessfully: bindActionCreators(mapActions.toggleBountySubmissionSuccessfully, dispatch),
+      setBountySubmissionTxnState: bindActionCreators(mapActions.setBountySubmissionTxnState, dispatch),
       // Dispatches redux-form action
       setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash)),
       setCoordinates: (newCoordinates: string) => dispatch(change('bountyCreationPanel', 'coordinates', newCoordinates)),
