@@ -41,6 +41,7 @@ class BountyCreationPanel extends React.Component<IProps> {
       setCoordinates(this.getCoordinatesString(newGeohash));
     }
   }
+
   public render() {
     const { bountySubmittedSuccessfully } = this.props;
 
