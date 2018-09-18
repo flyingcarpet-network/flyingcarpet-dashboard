@@ -45,7 +45,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     const { bountySubmittedSuccessfully } = this.props;
 
     return (
-      <div>
+      <div className="col-sm-6 col-md-4 col-lg-3 col-12" style={{zIndex: 90}}>
           {(!bountySubmittedSuccessfully) &&
             <Form onSubmit={this.formSubmit} />
           }

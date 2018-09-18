@@ -29,7 +29,7 @@ class Header extends React.Component<IProps> {
 
     console.log('networkName: ', networkName);
 
-    let classbox= 'jr-btn jr-btn-xs jr-btn-default btn btn-default';
+    let classbox= 'jr-btn jr-btn-xs jr-btn-primary btn btn-default';
     let styleIcon= 'red';
     // let style = styles.unknownCircle
 
@@ -39,14 +39,14 @@ class Header extends React.Component<IProps> {
 
     if (networkName === 'rinkeby') {
       // style= styles.rinkebyCircle;
-      classbox= 'jr-btn jr-btn-xs jr-btn-default btn btn-default';
+      classbox= 'jr-btn jr-btn-xs jr-btn-primary btn btn-default';
       styleIcon= 'red';
       networkName = 'Rinkeby Network';
     }
 
     if (networkName === 'main') {
       // style= styles.mainnetCircle;
-      classbox= 'jr-btn jr-btn-xs jr-btn-default btn btn-default';
+      classbox= 'jr-btn jr-btn-xs jr-btn-primary btn btn-default';
       styleIcon= 'red';
       networkName = 'Main Ethereum Network';
     }
