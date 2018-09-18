@@ -1,5 +1,5 @@
 import * as types from '../actions/mapActions-types';
-import { BountyFilter } from './dataTypeEnums';
+import { BountyFilter, TxnStates } from './dataTypeEnums';
 
 const INITIAL_STATE = {
   // TO-DO: These are London coordinates, the code should allow an empty
@@ -11,8 +11,8 @@ const INITIAL_STATE = {
   bountyStakeAmount: 0, // The amount of NTN token to stake
   selectedBountyToStake: 0, // The ID of the selected bounty (when the staking modal is opened)
   // TODO: These two flags (below) should be abstracted into their own reducers
-  bountyStakedSuccessfully: false, // Set to true right after a bounty has just been staked, then reset to false
-  bountySubmittedSuccessfully: false, // Set to true right after a bounty has just been added, then reset to false
+  bountyStakingTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been staked
+  bountySubmissionTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been added
   lastSuccessfulBountyTxnHash: '', // The hash of the last bounty successfully added
   bountyFilter: BountyFilter.ALL
 };
@@ -44,15 +44,15 @@ export default function models(state = INITIAL_STATE, action) {
         ...state,
         selectedBountyToStake: action.selectedBountyToStake
       };
-    case types.TOGGLE_BOUNTY_STAKED_SUCCESSFULLY:
+    case types.SET_BOUNTY_STAKING_TXN_STATE:
       return {
         ...state,
-        bountyStakedSuccessfully: !state.bountyStakedSuccessfully
+        bountyStakingTxnState: action.bountyStakingTxnState
       };
-    case types.TOGGLE_BOUNTY_SUBMISSION_SUCCESSFULLY:
+    case types.SET_BOUNTY_SUBMISSION_TXN_STATE:
       return {
         ...state,
-        bountySubmittedSuccessfully: !state.bountySubmittedSuccessfully
+        bountySubmissionTxnState: action.bountySubmissionTxnState
       };
     case types.SET_BOUNTY_FILTER:
       return {

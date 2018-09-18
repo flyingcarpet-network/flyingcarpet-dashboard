@@ -1,4 +1,4 @@
-import { BountyFilter } from '../reducers/dataTypeEnums';
+import { BountyFilter, TxnStates } from '../reducers/dataTypeEnums';
 import * as types from './mapActions-types';
 
 export const setCenter = (center: [number, number]) => (
@@ -36,15 +36,17 @@ export const setSelectedBountyToStake = (selectedBountyToStake: number) => (
   }
 );
 
-export const toggleBountyStakedSuccessfully = () => (
+export const setBountyStakingTxnState = (bountyStakingTxnState: TxnStates) => (
   {
-    type: types.TOGGLE_BOUNTY_STAKED_SUCCESSFULLY
+    bountyStakingTxnState,
+    type: types.SET_BOUNTY_STAKING_TXN_STATE
   }
 );
 
-export const toggleBountySubmissionSuccessfully = () => (
+export const setBountySubmissionTxnState = (bountySubmissionTxnState: TxnStates) => (
   {
-    type: types.TOGGLE_BOUNTY_SUBMISSION_SUCCESSFULLY
+    bountySubmissionTxnState,
+    type: types.SET_BOUNTY_SUBMISSION_TXN_STATE
   }
 );
 

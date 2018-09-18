@@ -33,7 +33,7 @@ export function isAnyUnlockedAccount(web3) {
 export function getDefaultAccount(web3) {
   return new Promise((resolve, reject) => {
     return web3.eth.getAccounts().then(accounts => {
-      if (accounts.length < 1) { reject(); }
+      if (accounts.length < 1) { throw new Error('Please unlock your MetaMask account!'); }
       resolve(accounts[0]);
     }).catch(reject);
   });
@@ -188,7 +188,6 @@ export function submitBounty(web3, formValues) {
     return getDefaultAccount(web3).then((accountAddr: any) => {
       // Get current gas price
       return web3.eth.getGasPrice().then((price: number) => {
-        console.log(price);
         // Submit new bounty 
         return registryContract.methods.submit(bountyDataString).send({ from: accountAddr, gasPrice: price, gas: 2500000 }).then(resolve).catch(reject);
       }).catch(reject);

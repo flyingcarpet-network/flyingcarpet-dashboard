@@ -6,6 +6,7 @@ import { bindActionCreators, compose } from 'redux';
 import * as mapActions from '../../actions/mapActions';
 import * as modalsActions from '../../actions/modalsActions';
 import * as tcroActions from '../../actions/tcroActions';
+import { TxnStates } from '../../reducers/dataTypeEnums';
 import * as Web3Utils from '../../utils/web3-utils';
 
 export interface IProps {
@@ -15,8 +16,8 @@ export interface IProps {
   setBountyStakeAmount: (stakeAmount: number) => any;
   web3: any;
   selectedBountyToStake: number;
-  toggleBountyStakedSuccessfully: () => any;
-  bountyStakedSuccessfully: boolean;
+  setBountyStakingTxnState: (state: TxnStates) => any;
+  bountyStakingTxnState: TxnStates;
   setBounties: (bounties: any) => any;
   lastSuccessfulBountyTxnHash: string;
   setLastSuccessfulBountyTxnHash: (hash: string) => any;
@@ -24,7 +25,7 @@ export interface IProps {
 
 class AlertModals extends React.Component<IProps> {
   public render() {
-    const { showStakingDialog, toggleStakingDialog, bountyStakeAmount, bountyStakedSuccessfully, lastSuccessfulBountyTxnHash } = this.props;
+    const { showStakingDialog, toggleStakingDialog, bountyStakeAmount, bountyStakingTxnState, lastSuccessfulBountyTxnHash } = this.props;
 
     return (
       <div className="text-center">
@@ -33,7 +34,7 @@ class AlertModals extends React.Component<IProps> {
           isOpen={showStakingDialog}
           toggle={toggleStakingDialog}>
           <ModalHeader>Stake This Opportunity</ModalHeader>
-          {(!bountyStakedSuccessfully) &&
+          {(bountyStakingTxnState === TxnStates.DEFAULT) &&
             <ModalBody>
               <b>Nitrogen to stake: </b><input
                 onChange={this.onChange}
@@ -44,21 +45,37 @@ class AlertModals extends React.Component<IProps> {
               then press the "done" button below. You will then be prompted with two different MetaMask transactions popups.
             </ModalBody>
           }
-          {bountyStakedSuccessfully &&
+          {(bountyStakingTxnState === TxnStates.PENDING) &&
             <ModalBody>
-              <b>Bounty successfully staked!</b>
+              <b>Bounty staking transaction successfully added to block!</b>
               <br />
-              You can view the transaction on <a href={"https://rinkeby.etherscan.io/tx/" + lastSuccessfulBountyTxnHash} target="_blank">EtherScan</a>.
+              See the transaction pending here: <a href={"https://rinkeby.etherscan.io/tx/" + lastSuccessfulBountyTxnHash} target="_blank">EtherScan</a>.
+            </ModalBody>
+          }
+          {(bountyStakingTxnState === TxnStates.SUBMITTED) &&
+            <ModalBody>
+              <b>Staking transaction processing... Please confirm both transactions</b>
+              <br />
+              Please wait... (May take as long as 30 seconds for both transactions to be added to blocks)
+            </ModalBody>
+          }
+          {(bountyStakingTxnState === TxnStates.FAILED) &&
+            <ModalBody>
+              <b>Bounty staking failed.</b>
+              <br />
+              Please check that you have NTN to stake and enough ETH for gas.
             </ModalBody>
           }
           <ModalFooter>
-            <Button
-              color="primary"
-              onClick={this.contributeToBounty}
-            >
-              Done
-            </Button>
-            {' '}
+            {(bountyStakingTxnState === TxnStates.DEFAULT) &&
+              <Button
+                color="primary"
+                onClick={this.contributeToBounty}
+              >
+                Done
+              </Button>
+            }
+            {(bountyStakingTxnState === TxnStates.DEFAULT) && ' '}
             <Button color="secondary"
               onClick={toggleStakingDialog}
             >
@@ -76,13 +93,16 @@ class AlertModals extends React.Component<IProps> {
     setBountyStakeAmount(bountyStakeAmount);
   }
   private contributeToBounty = () => {
-    const { web3, selectedBountyToStake, bountyStakeAmount, toggleStakingDialog, setBountyStakeAmount, toggleBountyStakedSuccessfully, setBounties, setLastSuccessfulBountyTxnHash } = this.props;
+    const { web3, selectedBountyToStake, bountyStakeAmount, toggleStakingDialog, setBountyStakeAmount, setBountyStakingTxnState, setBounties, setLastSuccessfulBountyTxnHash } = this.props;
 
+    // Show transaction submitted message
+    setBountyStakingTxnState(TxnStates.SUBMITTED);
+    // Contribute via Web3
     Web3Utils.contributeToBounty(web3, selectedBountyToStake, bountyStakeAmount).then(res => {
       // Clear bounty staking input
       setBountyStakeAmount(0);
       // Show success message
-      toggleBountyStakedSuccessfully();
+      setBountyStakingTxnState(TxnStates.PENDING);
       // Set hash of successful bounty
       setLastSuccessfulBountyTxnHash((res as any).transactionHash);
       // Wait 6 seconds
@@ -90,10 +110,17 @@ class AlertModals extends React.Component<IProps> {
         // Close the staking dialog modal
         toggleStakingDialog();
         // Hide success message
-        toggleBountyStakedSuccessfully();
+        setBountyStakingTxnState(TxnStates.DEFAULT);
         // Reload map bounties
         Web3Utils.getBounties(web3).then(setBounties).catch(err => { console.error('Unable to load bounties!'); console.error(err); });
-      }, 6000);
+      }, 10000);
+    }).catch(err => {
+      // Print error to console
+      console.error(err);
+      // Show message of failed transaction
+      setBountyStakingTxnState(TxnStates.FAILED);
+      // Hide failure message
+      setTimeout(() => { setBountyStakingTxnState(TxnStates.DEFAULT); }, 10000);
     });
   }
 }
@@ -104,13 +131,13 @@ export default compose<any>(
       showStakingDialog: state.modals.stakingDialog,
       bountyStakeAmount: state.map.bountyStakeAmount,
       selectedBountyToStake: state.map.selectedBountyToStake,
-      bountyStakedSuccessfully: state.map.bountyStakedSuccessfully,
+      bountyStakingTxnState: state.map.bountyStakingTxnState,
       lastSuccessfulBountyTxnHash: state.map.lastSuccessfulBountyTxnHash
     }),
     dispatch => ({
       toggleStakingDialog: bindActionCreators(modalsActions.toggleStakingDialog, dispatch),
       setBountyStakeAmount: bindActionCreators(mapActions.setBountyStakeAmount, dispatch),
-      toggleBountyStakedSuccessfully: bindActionCreators(mapActions.toggleBountyStakedSuccessfully, dispatch),
+      setBountyStakingTxnState: bindActionCreators(mapActions.setBountyStakingTxnState, dispatch),
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
       setLastSuccessfulBountyTxnHash: bindActionCreators(mapActions.setLastSuccessfulBountyTxnHash, dispatch)
     })
