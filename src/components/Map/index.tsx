@@ -42,6 +42,8 @@ export interface IProps {
   setStakingPoolSize: (size: number) => any;
   stakingPoolSize: number;
   bountyFilter: BountyFilter;
+  setMapZoom: (zoom: number) => any;
+  mapZoom: number;
 }
 
 // Heatmap layer style
@@ -201,20 +203,22 @@ class BountyMap extends React.Component<IProps> {
     Web3Utils.getStakingPoolSize(web3).then(setStakingPoolSize).catch(err => { console.error('Unable to load stakingPoolSize constant!'); console.error(err) });
   }
   public render() {
-    const { center, zoom, bounties, stakingPoolSize } = this.props;
+    const { center, zoom, bounties, stakingPoolSize, mapZoom } = this.props;
 
     // Due to some odd behavior from the MapBox Layer component, we have to construct the array of bounty
     // feature elements beforehand and then pass the array as children to the Layer component.
     const layerFeatures: JSX.Element[] = [];
-    bounties.map((bounty: any, index: number) => {
-      // Filter bounties by bounty filters (active/inactive/complete)
-      if (this.filterBounty(bounty.balance)) {
-        layerFeatures.push(<Feature
-          key={index}
-          coordinates={[bounty.center.latitude, bounty.center.longitude]}
-        />);
-      }
-    })
+    if (mapZoom < 9) { // We only use the heatmap if we're zoomed out beyond the 9 level
+      bounties.map((bounty: any, index: number) => {
+        // Filter bounties by bounty filters (active/inactive/complete)
+        if (this.filterBounty(bounty.balance)) {
+          layerFeatures.push(<Feature
+            key={index}
+            coordinates={[bounty.center.latitude, bounty.center.longitude]}
+          />);
+        }
+      });
+    }
 
     return (
       <div>
@@ -227,6 +231,7 @@ class BountyMap extends React.Component<IProps> {
                 style={mapStyle}
                 zoom={zoom}
                 onClick={this.recordMapClick}
+                onZoom={this.onZoom}
               >
                 <DrawControl
                   position='bottom-right'
@@ -235,9 +240,13 @@ class BountyMap extends React.Component<IProps> {
                   ref={(drawControl) => { this.drawControl = drawControl; }}
                   styles={polygonSelectionStyles}
                 />
-                <Layer type="heatmap" paint={layerPaint as any} children={layerFeatures} />
                 <div>
-                  {bounties.map((bounty: any, index: number) => {
+                  {(mapZoom < 9) &&
+                    <Layer type="heatmap" paint={layerPaint as any} children={layerFeatures} />
+                  }
+                </div>
+                <div>
+                  {(mapZoom >= 11) && bounties.map((bounty: any, index: number) => {
                     // Filter bounties by bounty filters (active/inactive/complete)
                     if (this.filterBounty(bounty.balance)) {
                       return (
@@ -251,7 +260,7 @@ class BountyMap extends React.Component<IProps> {
                     }
                     return;
                   })}
-                  {bounties.map((bounty: any, index: number) => {
+                  {(mapZoom >= 9 && mapZoom < 11) && bounties.map((bounty: any, index: number) => {
                     // Filter bounties by bounty filters (active/inactive/complete)
                     if (this.filterBounty(bounty.balance)) {
                       return (
@@ -281,6 +290,11 @@ class BountyMap extends React.Component<IProps> {
         </div>
       </div>
     )
+  }
+  private onZoom = (map) => {
+    const { setMapZoom } = this.props;
+
+    setMapZoom(map.getZoom());
   }
   private recordMapClick = (_, data) => {
     const { setMapPolygonPoints } = this.props;
@@ -343,14 +357,16 @@ export default compose<any>(
       bounties: state.tcro.bounties,
       center: state.map.center,
       stakingPoolSize: state.tcro.stakingPoolSize,
-      bountyFilter: state.map.bountyFilter
+      bountyFilter: state.map.bountyFilter,
+      mapZoom: state.map.mapZoom
     }),
     dispatch => ({
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
       setMapPolygonPoints: bindActionCreators(mapActions.setMapPolygonPoints, dispatch),
       toggleStakingDialog: bindActionCreators(modalsActions.toggleStakingDialog, dispatch),
       setSelectedBountyToStake: bindActionCreators(mapActions.setSelectedBountyToStake, dispatch),
-      setStakingPoolSize: bindActionCreators(tcroActions.setStakingPoolSize, dispatch)
+      setStakingPoolSize: bindActionCreators(tcroActions.setStakingPoolSize, dispatch),
+      setMapZoom: bindActionCreators(mapActions.setMapZoom, dispatch)
     })
   ),
   withWeb3

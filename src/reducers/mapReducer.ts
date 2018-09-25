@@ -14,7 +14,8 @@ const INITIAL_STATE = {
   bountyStakingTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been staked
   bountySubmissionTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been added
   lastSuccessfulBountyTxnHash: '', // The hash of the last bounty successfully added
-  bountyFilter: BountyFilter.ALL
+  bountyFilter: BountyFilter.ALL,
+  mapZoom: 11 // Level of zoom on the map
 };
 
 export default function models(state = INITIAL_STATE, action) {
@@ -63,6 +64,11 @@ export default function models(state = INITIAL_STATE, action) {
       return {
         ...state,
         lastSuccessfulBountyTxnHash: action.lastSuccessfulBountyTxnHash
+      };
+    case types.SET_MAP_ZOOM:
+      return {
+        ...state,
+        mapZoom: action.mapZoom
       };
     default:
       return state;

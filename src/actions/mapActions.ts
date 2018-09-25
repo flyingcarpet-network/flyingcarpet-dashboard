@@ -63,3 +63,10 @@ export const setLastSuccessfulBountyTxnHash = (lastSuccessfulBountyTxnHash: stri
     type: types.SET_LAST_SUCCESSFUL_BOUNTY_TXN_HASH
   }
 );
+
+export const setMapZoom = (mapZoom: number) => (
+  {
+    mapZoom,
+    type: types.SET_MAP_ZOOM
+  }
+);
