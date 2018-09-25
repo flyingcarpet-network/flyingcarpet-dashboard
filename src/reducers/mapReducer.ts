@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   // 'currentPlace' so that it defaults to the user's inferred location
   center: [-0.1275, 51.50722],
   searchTerm: '',
-  mapClickLocation: [], // An array of lat/lon coordinates for the last location the user clicked on the map
+  mapSelectedPolygonPoints: [], // An array of lat/lon coordinates for the last location the user clicked on the map
   // For bounty contribution dialog modal
   bountyStakeAmount: 0, // The amount of NTN token to stake
   selectedBountyToStake: 0, // The ID of the selected bounty (when the staking modal is opened)
@@ -14,7 +14,9 @@ const INITIAL_STATE = {
   bountyStakingTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been staked
   bountySubmissionTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been added
   lastSuccessfulBountyTxnHash: '', // The hash of the last bounty successfully added
-  bountyFilter: BountyFilter.ALL
+  bountyFilter: BountyFilter.ALL,
+  mapZoom: 11, // Level of zoom on the map
+  openPopupBountyData: {} // Object of data associated with the clicked map popup window
 };
 
 export default function models(state = INITIAL_STATE, action) {
@@ -29,10 +31,10 @@ export default function models(state = INITIAL_STATE, action) {
         ...state,
         searchTerm: action.searchTerm
       };
-    case types.SET_MAP_CLICK_LOCATION:
+    case types.SET_MAP_POLYGON_POINTS:
       return {
         ...state,
-        mapClickLocation: action.mapClickLocation
+        mapSelectedPolygonPoints: action.mapSelectedPolygonPoints
       };
     case types.SET_BOUNTY_STAKE_AMOUNT:
       return {
@@ -63,6 +65,16 @@ export default function models(state = INITIAL_STATE, action) {
       return {
         ...state,
         lastSuccessfulBountyTxnHash: action.lastSuccessfulBountyTxnHash
+      };
+    case types.SET_MAP_ZOOM:
+      return {
+        ...state,
+        mapZoom: action.mapZoom
+      };
+    case types.SET_OPEN_POPUP_BOUNTY_DATA:
+      return {
+        ...state,
+        openPopupBountyData: action.openPopupBountyData
       };
     default:
       return state;

@@ -2,7 +2,8 @@ import * as types from '../actions/modalsActions-types';
 
 const INITIAL_STATE = {
   stakingDialog: false,
-  aboutDialog: false
+  aboutDialog: false,
+  faucetDialog: false
 };
 
 export default function models(state = INITIAL_STATE, action) {
@@ -16,6 +17,11 @@ export default function models(state = INITIAL_STATE, action) {
       return {
         ...INITIAL_STATE,
         aboutDialog: !state.aboutDialog
+      };
+    case types.TOGGLE_FAUCET_DIALOG:
+      return {
+        ...INITIAL_STATE,
+        faucetDialog: !state.faucetDialog
       };
     default:
       return state;

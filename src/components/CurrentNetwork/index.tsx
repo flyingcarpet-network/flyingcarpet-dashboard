@@ -27,8 +27,6 @@ class Header extends React.Component<IProps> {
   public render() {
     let { networkName } = this.props;
 
-    console.log('networkName: ', networkName);
-
     let classbox= 'jr-btn jr-btn-xs jr-btn-primary btn btn-default';
     let styleIcon= 'red';
     // let style = styles.unknownCircle

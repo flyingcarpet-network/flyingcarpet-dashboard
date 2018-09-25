@@ -15,10 +15,10 @@ export const setSearchTerm = (searchTerm: string) => (
   }
 );
 
-export const setMapClickLocation = (mapClickLocation: [any,any]) => (
+export const setMapPolygonPoints = (mapSelectedPolygonPoints: any) => (
   {
-    mapClickLocation,
-    type: types.SET_MAP_CLICK_LOCATION
+    mapSelectedPolygonPoints,
+    type: types.SET_MAP_POLYGON_POINTS
   }
 );
 
@@ -61,5 +61,19 @@ export const setLastSuccessfulBountyTxnHash = (lastSuccessfulBountyTxnHash: stri
   {
     lastSuccessfulBountyTxnHash,
     type: types.SET_LAST_SUCCESSFUL_BOUNTY_TXN_HASH
+  }
+);
+
+export const setMapZoom = (mapZoom: number) => (
+  {
+    mapZoom,
+    type: types.SET_MAP_ZOOM
+  }
+);
+
+export const setOpenPopupBountyData = (openPopupBountyData: any) => (
+  {
+    openPopupBountyData,
+    type: types.SET_OPEN_POPUP_BOUNTY_DATA
   }
 );

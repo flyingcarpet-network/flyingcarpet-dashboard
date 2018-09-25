@@ -1,9 +1,12 @@
 import * as types from '../actions/web3Actions-types';
+import { TxnStates } from './dataTypeEnums';
 
 const INITIAL_STATE = {
   isAnyUnlockedAccount: false,
   networkName: '',
-  nitrogenBalance: 0
+  nitrogenBalance: 0,
+  nitrogenMintTxnState: TxnStates.DEFAULT, // Set to DEFAULT before minting has occured
+  lastSuccessfulMintTxnHash: ''
 };
 
 export default function web3(state = INITIAL_STATE, action) {
@@ -22,6 +25,16 @@ export default function web3(state = INITIAL_STATE, action) {
       return {
         ...state,
         nitrogenBalance: action.nitrogenBalance
+      };
+    case types.SET_NITROGEN_MINT_TXN_STATE:
+      return {
+        ...state,
+        nitrogenMintTxnState: action.nitrogenMintTxnState
+      };
+    case types.SET_LAST_SUCCESSFUL_MINT_TXN_HASH:
+      return {
+        ...state,
+        lastSuccessfulMintTxnHash: action.lastSuccessfulMintTxnHash
       };
     default:
       return state;

@@ -13,9 +13,9 @@ import Form from './Form';
 export interface IProps {
   web3: any;
   handleSubmit: () => any;
-  mapClickLocation: {lat: number, lng: number};
+  mapSelectedPolygonPoints: any;
   formData: any;
-  setGeohash: (newGeohash: string) => any;
+  setGeohashes: (newGeohash: string) => any;
   setBountySubmissionTxnState: (state: TxnStates) => any;
   bountySubmissionTxnState: TxnStates;
   setCoordinates: (newCoordinates: string) => any;
@@ -26,23 +26,27 @@ export interface IProps {
 
 class BountyCreationPanel extends React.Component<IProps> {
   public componentDidUpdate() {
-    const { formData, setGeohash, setCoordinates } = this.props;
+    const { formData, setGeohashes, setCoordinates } = this.props;
 
-    let geohashInputValue = '';
+    let geohashesInputValue = '';
     // Only access current geohash if it is in fact set (not undefined)
-    if (formData && formData.values && formData.values.geohash) {
-      geohashInputValue = formData.values.geohash;
+    if (formData && formData.values && formData.values.geohashes) {
+      geohashesInputValue = formData.values.geohashes;
     }
 
     // Get new updated geohash
-    const newGeohash = this.getGeohash();
-
-    // Compare new updated geohash to existing one, and if they're different,
-    // update the input to contain the new geohash
-    if (newGeohash !== geohashInputValue) {
-      setGeohash(newGeohash);
-      setCoordinates(this.getCoordinatesString(newGeohash));
-    }
+    this.getGeohashes().then(geohashes => {
+      const newGeohashes = Array(geohashes).join(', ');
+      // Compare new updated geohash to existing one, and if they're not different,
+      // then do nothing
+      if (newGeohashes === geohashesInputValue) { return; }
+      // If they are different, update the input to contain the new geohash
+      setGeohashes(newGeohashes);
+      // Also update the coordiates input
+      this.getCoordinatesString().then((coordinateStringsArray: string[]) => {
+        setCoordinates(coordinateStringsArray.join(', '));
+      });
+    });
   }
 
   public render() {
@@ -107,21 +111,51 @@ class BountyCreationPanel extends React.Component<IProps> {
       </div>
     );
   }
-  private getGeohash = () => {
-    const { mapClickLocation } = this.props;
+  private getGeohashes = () => {
+    return new Promise(resolve => {
+      const { mapSelectedPolygonPoints } = this.props;
 
-    if (!mapClickLocation.lat || !mapClickLocation.lng) { return ''; }
-    return Geohash.encode(mapClickLocation.lat, mapClickLocation.lng);
+      const geohashes: any[] = [];
+
+      if (!mapSelectedPolygonPoints || mapSelectedPolygonPoints.length === 0) {
+        return resolve(geohashes);
+      }
+
+      return mapSelectedPolygonPoints.forEach((item: number[], index) => {
+        geohashes.push(this.getGeohash(item as number[]) as string);
+        if (index === mapSelectedPolygonPoints.length - 1) {
+          return resolve(geohashes);
+        }
+      });
+    });
   }
-  private getCoordinatesString(geohash) {
-    const coordinatesObj = Geohash.decode(geohash);
-    return coordinatesObj.lat + ", " + coordinatesObj.lon;
+  private getGeohash(coordinatePair): string {
+    if (!coordinatePair || coordinatePair.length !== 2) { return ''; }
+    return Geohash.encode(coordinatePair[0], coordinatePair[1]);
+  }
+  private getCoordinatesString = () => {
+    return new Promise(resolve => {
+      const { mapSelectedPolygonPoints } = this.props;
+
+      const coordinateStringsArray: any[] = [];
+
+      if (!mapSelectedPolygonPoints || mapSelectedPolygonPoints.length === 0) {
+        return resolve(coordinateStringsArray);
+      }
+
+      return mapSelectedPolygonPoints.forEach((item: number[], index) => {
+        coordinateStringsArray.push('(' + item[0] + ', ' + item[1] + ')');
+        if (index === mapSelectedPolygonPoints.length - 1) {
+          return resolve(coordinateStringsArray);
+        }
+      });
+    });
   }
   private formSubmit = values => {
     const { web3, setBountySubmissionTxnState, setBounties, setLastSuccessfulBountyTxnHash } = this.props;
 
     // Validate that a geohash string is being submitted, otherwise provide an error to the user
-    if (!values.geohash || values.geohash.length === 0) {
+    if (!values.geohashes || values.geohashes.length === 0) {
       throw new SubmissionError({ _error: 'Please select a location for your bounty on the map.' });
       return;
     }
@@ -152,7 +186,7 @@ class BountyCreationPanel extends React.Component<IProps> {
 export default compose<any>(
   connect(
     state => ({
-      mapClickLocation: state.map.mapClickLocation,
+      mapSelectedPolygonPoints: state.map.mapSelectedPolygonPoints,
       formData: state.form.bountyCreationPanel,
       bountySubmissionTxnState: state.map.bountySubmissionTxnState,
       lastSuccessfulBountyTxnHash: state.map.lastSuccessfulBountyTxnHash
@@ -160,7 +194,7 @@ export default compose<any>(
     dispatch => ({
       setBountySubmissionTxnState: bindActionCreators(mapActions.setBountySubmissionTxnState, dispatch),
       // Dispatches redux-form action
-      setGeohash: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohash', newGeohash)),
+      setGeohashes: (newGeohash: string) => dispatch(change('bountyCreationPanel', 'geohashes', newGeohash)),
       setCoordinates: (newCoordinates: string) => dispatch(change('bountyCreationPanel', 'coordinates', newCoordinates)),
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
       setLastSuccessfulBountyTxnHash: bindActionCreators(mapActions.setLastSuccessfulBountyTxnHash, dispatch)
