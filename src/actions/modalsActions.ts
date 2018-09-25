@@ -11,3 +11,9 @@ export const toggleAboutDialog = () => (
     type: types.TOGGLE_ABOUT_DIALOG
   }
 );
+
+export const toggleFaucetDialog = () => (
+  {
+    type: types.TOGGLE_FAUCET_DIALOG
+  }
+);
