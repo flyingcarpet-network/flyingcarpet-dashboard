@@ -22,14 +22,15 @@ class Form extends React.Component<IProps> {
            <h3 className="card-title">Description</h3>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Geo hash</label>
+                <label>Geo hashes</label>
                 <Field
-                  name="geohash"
+                  name="geohashes"
                   className="form-control"
                   component="input"
                   type="string"
                   placeholder="Click The Map"
                   style={error ? { border: '2px solid red' } : {}}
+                  disabled={true}
                 />
               </div>
               <div className="form-group">
@@ -41,6 +42,7 @@ class Form extends React.Component<IProps> {
                   type="string"
                   placeholder="Click The Map"
                   style={error ? { border: '2px solid red' } : {}}
+                  disabled={true}
                 />
               </div>
               <div className="form-group">

@@ -3,6 +3,7 @@
  */
 
 import Geohash from 'latlon-geohash';
+const geolib = require('geolib');
 const MintableTokenJSON = require('./../contracts/abi/MintableToken.json');
 const RegistryJSON = require('./../contracts/abi/Registry.json');
 const StandardBountiesJSON = require('./../contracts/abi/StandardBountiesInterface.json');
@@ -92,11 +93,15 @@ export function getBounties(web3) {
               const dataObj: any = JSON.parse(dataString);
 
               // Check that bounty has a geohash set (otherwise it will throw an error if the geohash field is empty)
-              if (dataObj.payload.geohash && dataObj.payload.geohash.length > 0) {
+              if (dataObj.payload.geohashes && dataObj.payload.geohashes.length > 0) {
+                // Construct array of coordinates (lat/lon pairs by spliting
+                // string of geohashes and removing spaces, before decoding)
+                const coordinates = dataObj.payload.geohashes.replace(/\s/g, '').split(',').map(Geohash.decode);
                 // Push bounty to return array
                 bountyData.push({
                   ...dataObj.payload,
-                  coordinates: Geohash.decode(dataObj.payload.geohash),
+                  coordinates,
+                  center: geolib.getCenter(coordinates),
                   bountyID,
                   balance: bountyBalance
                 });
@@ -157,13 +162,13 @@ export function submitBounty(web3, formValues) {
 
     const erc20ContractAddress = contractAddresses.Nitrogen;
 
-    const { geohash, useType, collectionType, droneType, fileFormat } = formValues;
+    const { geohashes, useType, collectionType, droneType, fileFormat } = formValues;
 
     // TODO: Add extensive data validation of form values.
 
     const bountyObject = {
       "payload": {
-        "title":  "Data collection using a " + capitalize(collectionType) + " for " + capitalize(useType) + " @  " + geohash + " (geohash)",
+        "title":  "Data collection using a " + capitalize(collectionType) + " for " + capitalize(useType) + " @  " + JSON.stringify(geohashes) + " (geohashes)",
         "description": "This is a request for aerial land data collection using a satellite. ...",
         "issuer": [
           {"address": registryContractAddress}
@@ -173,7 +178,7 @@ export function submitBounty(web3, formValues) {
         "created": 1536957876,
         "tokenSymbol": "NTN",
         "tokenAddress": erc20ContractAddress,
-        "geohash": geohash,
+        "geohashes": geohashes,
         "useType": useType,
         "collectionType": collectionType,
         // "radiusOfCollection": dataCollectionRadius,

@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.0.9",
     "@mapbox/mapbox-sdk": "^0.4.1",
     "aphrodite": "^2.2.3",
+    "geolib": "^2.0.24",
     "history": "^4.7.2",
     "latlon-geohash": "^1.1.0",
     "mapbox-gl": "^0.48.0",
@@ -15,6 +17,7 @@
     "react-dom": "^16.1.1",
     "react-intl": "^2.5.0",
     "react-mapbox-gl": "3.8.0",
+    "react-mapbox-gl-draw": "^1.0.4",
     "react-notifications": "^1.4.3",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",

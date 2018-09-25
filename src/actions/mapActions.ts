@@ -15,10 +15,10 @@ export const setSearchTerm = (searchTerm: string) => (
   }
 );
 
-export const setMapClickLocation = (mapClickLocation: [any,any]) => (
+export const setMapPolygonPoints = (mapSelectedPolygonPoints: any) => (
   {
-    mapClickLocation,
-    type: types.SET_MAP_CLICK_LOCATION
+    mapSelectedPolygonPoints,
+    type: types.SET_MAP_POLYGON_POINTS
   }
 );
 

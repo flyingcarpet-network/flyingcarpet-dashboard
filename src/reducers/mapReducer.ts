@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   // 'currentPlace' so that it defaults to the user's inferred location
   center: [-0.1275, 51.50722],
   searchTerm: '',
-  mapClickLocation: [], // An array of lat/lon coordinates for the last location the user clicked on the map
+  mapSelectedPolygonPoints: [], // An array of lat/lon coordinates for the last location the user clicked on the map
   // For bounty contribution dialog modal
   bountyStakeAmount: 0, // The amount of NTN token to stake
   selectedBountyToStake: 0, // The ID of the selected bounty (when the staking modal is opened)
@@ -29,10 +29,10 @@ export default function models(state = INITIAL_STATE, action) {
         ...state,
         searchTerm: action.searchTerm
       };
-    case types.SET_MAP_CLICK_LOCATION:
+    case types.SET_MAP_POLYGON_POINTS:
       return {
         ...state,
-        mapClickLocation: action.mapClickLocation
+        mapSelectedPolygonPoints: action.mapSelectedPolygonPoints
       };
     case types.SET_BOUNTY_STAKE_AMOUNT:
       return {
