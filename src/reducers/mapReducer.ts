@@ -15,7 +15,8 @@ const INITIAL_STATE = {
   bountySubmissionTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been added
   lastSuccessfulBountyTxnHash: '', // The hash of the last bounty successfully added
   bountyFilter: BountyFilter.ALL,
-  mapZoom: 11 // Level of zoom on the map
+  mapZoom: 11, // Level of zoom on the map
+  openPopupBountyData: {} // Object of data associated with the clicked map popup window
 };
 
 export default function models(state = INITIAL_STATE, action) {
@@ -69,6 +70,11 @@ export default function models(state = INITIAL_STATE, action) {
       return {
         ...state,
         mapZoom: action.mapZoom
+      };
+    case types.SET_OPEN_POPUP_BOUNTY_DATA:
+      return {
+        ...state,
+        openPopupBountyData: action.openPopupBountyData
       };
     default:
       return state;

@@ -1,6 +1,6 @@
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import * as React from 'react';
-import ReactMapboxGl, { Feature, Layer, Marker } from 'react-mapbox-gl';
+import ReactMapboxGl, { Feature, Layer, Marker, Popup } from 'react-mapbox-gl';
 import DrawControl from 'react-mapbox-gl-draw';
 import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
@@ -44,6 +44,8 @@ export interface IProps {
   bountyFilter: BountyFilter;
   setMapZoom: (zoom: number) => any;
   mapZoom: number;
+  setOpenPopupBountyData: (data: any) => any;
+  openPopupBountyData: any;
 }
 
 // Heatmap layer style
@@ -203,7 +205,7 @@ class BountyMap extends React.Component<IProps> {
     Web3Utils.getStakingPoolSize(web3).then(setStakingPoolSize).catch(err => { console.error('Unable to load stakingPoolSize constant!'); console.error(err) });
   }
   public render() {
-    const { center, zoom, bounties, stakingPoolSize, mapZoom } = this.props;
+    const { center, zoom, bounties, stakingPoolSize, mapZoom, openPopupBountyData } = this.props;
 
     // Due to some odd behavior from the MapBox Layer component, we have to construct the array of bounty
     // feature elements beforehand and then pass the array as children to the Layer component.
@@ -240,6 +242,24 @@ class BountyMap extends React.Component<IProps> {
                   ref={(drawControl) => { this.drawControl = drawControl; }}
                   styles={polygonSelectionStyles}
                 />
+                <div>
+                  {(Object.keys(openPopupBountyData).length > 0) &&
+                    <Popup
+                      coordinates={[openPopupBountyData.center.latitude, openPopupBountyData.center.longitude]}
+                      style={{color: 'black', maxWidth: 400, wordWrap: 'break-word'}}
+                    >
+                      <h2>{openPopupBountyData.title}</h2>
+                      <p>{openPopupBountyData.description}<br />
+                      Geo Hashes: {openPopupBountyData.geohashes}<br />
+                      Bounty ID: {openPopupBountyData.bountyID}<br />
+                      Funding: {openPopupBountyData.balance} / {stakingPoolSize} NTN<br />
+                      Status: {(Number(openPopupBountyData.balance) < Number(stakingPoolSize)) ? 'Inactive' : 'Active'}</p>
+                      {(Number(openPopupBountyData.balance) < Number(stakingPoolSize)) &&
+                        <p><button onClick={this.openStakingDialog.bind(this, openPopupBountyData)}>- Stake to Support Bounty -</button></p>
+                      }
+                    </Popup>
+                  }
+                </div>
                 <div>
                   {(mapZoom < 9) &&
                     <Layer type="heatmap" paint={layerPaint as any} children={layerFeatures} />
@@ -297,7 +317,10 @@ class BountyMap extends React.Component<IProps> {
     setMapZoom(map.getZoom());
   }
   private recordMapClick = (_, data) => {
-    const { setMapPolygonPoints } = this.props;
+    const { setMapPolygonPoints, setOpenPopupBountyData } = this.props;
+
+    // Close popup window (due to click anywhere on map)
+    setOpenPopupBountyData({});
 
     // Get all features
     const selectionFeatures = this.drawControl.draw.getAll().features;
@@ -326,13 +349,22 @@ class BountyMap extends React.Component<IProps> {
     setMapPolygonPoints(uniquePointsCoordinates);
   }
   private markerClick = (bounty: any) => {
-    const { toggleStakingDialog, setSelectedBountyToStake, stakingPoolSize } = this.props;
+    const { setOpenPopupBountyData } = this.props;
+
+    // Display info window
+    setOpenPopupBountyData(bounty);
+  }
+  private openStakingDialog = (bounty: any) => {
+    const { toggleStakingDialog, setSelectedBountyToStake, stakingPoolSize, setOpenPopupBountyData } = this.props;
 
     // Only allow staking dialog to be opened if clicked an inactive (unfunded bounty)
     if (Number(bounty.balance) < Number(stakingPoolSize)) {
       toggleStakingDialog(); // Open staking modal
       setSelectedBountyToStake(bounty.bountyID); // Set bounty ID of currently clicked bounty
     }
+
+    // Close info window
+    setOpenPopupBountyData({});
   }
   /*
    * This function is used to filter bounties on the map based on the filter selected by the user
@@ -358,7 +390,8 @@ export default compose<any>(
       center: state.map.center,
       stakingPoolSize: state.tcro.stakingPoolSize,
       bountyFilter: state.map.bountyFilter,
-      mapZoom: state.map.mapZoom
+      mapZoom: state.map.mapZoom,
+      openPopupBountyData: state.map.openPopupBountyData
     }),
     dispatch => ({
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
@@ -366,7 +399,8 @@ export default compose<any>(
       toggleStakingDialog: bindActionCreators(modalsActions.toggleStakingDialog, dispatch),
       setSelectedBountyToStake: bindActionCreators(mapActions.setSelectedBountyToStake, dispatch),
       setStakingPoolSize: bindActionCreators(tcroActions.setStakingPoolSize, dispatch),
-      setMapZoom: bindActionCreators(mapActions.setMapZoom, dispatch)
+      setMapZoom: bindActionCreators(mapActions.setMapZoom, dispatch),
+      setOpenPopupBountyData: bindActionCreators(mapActions.setOpenPopupBountyData, dispatch)
     })
   ),
   withWeb3

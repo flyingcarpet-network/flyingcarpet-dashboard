@@ -70,3 +70,10 @@ export const setMapZoom = (mapZoom: number) => (
     type: types.SET_MAP_ZOOM
   }
 );
+
+export const setOpenPopupBountyData = (openPopupBountyData: any) => (
+  {
+    openPopupBountyData,
+    type: types.SET_OPEN_POPUP_BOUNTY_DATA
+  }
+);
