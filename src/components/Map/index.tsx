@@ -9,7 +9,7 @@ import * as mapActions from '../../actions/mapActions';
 import * as modalsActions from '../../actions/modalsActions';
 import * as tcroActions from '../../actions/tcroActions';
 import { MAPBOX_ACCESS_TOKEN } from '../../constants';
-import { BountyFilter } from '../../reducers/dataTypeEnums';
+import { BountyFilter, TxnStates } from '../../reducers/dataTypeEnums';
 import * as Web3Utils from '../../utils/web3-utils';
 import ContributionModal from './../ContributionModal';
 
@@ -46,6 +46,7 @@ export interface IProps {
   mapZoom: number;
   setOpenPopupBountyData: (data: any) => any;
   openPopupBountyData: any;
+  bountySubmissionTxnState: TxnStates;
 }
 
 // Heatmap layer style
@@ -204,6 +205,23 @@ class BountyMap extends React.Component<IProps> {
     // Get stakingPoolSize smart-contract constant
     Web3Utils.getStakingPoolSize(web3).then(setStakingPoolSize).catch(err => { console.error('Unable to load stakingPoolSize constant!'); console.error(err) });
   }
+  public componentDidUpdate = () => {
+    const { bountySubmissionTxnState } = this.props;
+
+    if (bountySubmissionTxnState === TxnStates.PENDING) {
+      // Get all features
+      const selectionFeatures = this.drawControl.draw.getAll().features;
+
+      // If there are any features, remove them since the user just finished adding a new bounty
+      // (the map shouldn't have any selected polygons)
+      if (selectionFeatures.length > 0) {
+        this.drawControl.draw.set({
+          type: 'FeatureCollection',
+          features: []
+        });
+      }
+    }
+  }
   public render() {
     const { center, zoom, bounties, stakingPoolSize, mapZoom, openPopupBountyData } = this.props;
 
@@ -295,7 +313,7 @@ class BountyMap extends React.Component<IProps> {
                               {(Number(bounty.balance) >= Number(stakingPoolSize)) && // Active bounty (ready to be fulfilled)
                                 <img alt="" src="https://www.mapbox.com/help/img/interactive-tools/custom_marker.png" />
                               }
-                              {(bounty.balance < stakingPoolSize) && // Inactive bounty (still waiting to be fully funded)
+                              {(Number(bounty.balance) < Number(stakingPoolSize)) && // Inactive bounty (still waiting to be fully funded)
                                 <img alt="" src="https://www.mapbox.com/help/data/examples/marker-editor.svg" />
                               }
                             </div>
@@ -391,7 +409,8 @@ export default compose<any>(
       stakingPoolSize: state.tcro.stakingPoolSize,
       bountyFilter: state.map.bountyFilter,
       mapZoom: state.map.mapZoom,
-      openPopupBountyData: state.map.openPopupBountyData
+      openPopupBountyData: state.map.openPopupBountyData,
+      bountySubmissionTxnState: state.map.bountySubmissionTxnState
     }),
     dispatch => ({
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch),

@@ -1,10 +1,10 @@
 {
 	"rinkeby": {
 		"contracts": {
-			"Registry": "0xae02f78d93dedafff0dcfbb374a5e154ead25d73",
-			"Nitrogen": "0xf17a2d08363f483e2482a2c69373e110f6fd241f",
-			"StandardBounties": "0xc6c0bfd1f6dcd03022c3871dc55c1a29d6692dd1",
-			"Parameterizer": "0x4fba87ddae911cb9b099414eb541c223777907d1"
+			"Registry": "0xd023b692030c65712c9064db6da340dca8bdfa25",
+			"Nitrogen": "0xd27a60f75d5e59a6f8c8fda7346673b6abe93ad1",
+			"StandardBounties": "0xd35f176624507fd7874f2b11b920193e5f9e2939",
+			"Parameterizer": "0x3eae01b7f1f3a504b0546414c2e00c89b7d4eb3f"
 		}
 	},
 	"private": {

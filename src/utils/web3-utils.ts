@@ -12,7 +12,7 @@ const addresses = require('./../contracts/addresses.json');
 // TODO: Make the different methods that use the address automatically
 //       detect network using the Redux networkName varibale.
 //       For now, we'll just manually set the network: (e.g. "rinkeby", "private", etc.):
-const contractAddresses = addresses.private.contracts;
+const contractAddresses = addresses.rinkeby.contracts;
 
 /*
  * @dev isAnyUnlockedAccount  Resolves if provider has at least one unlocked account. Rejects otherwise.
