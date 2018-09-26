@@ -103,6 +103,8 @@ class AlertModals extends React.Component<IProps> {
   private contributeToBounty = () => {
     const { web3, selectedBountyToStake, bountyStakeAmount, toggleStakingDialog, setBountyStakeAmount, setBountyStakingTxnState, setBounties, setLastSuccessfulBountyTxnHash } = this.props;
 
+    // Only allow contribution submission if the bountyStakeAmount is a positive number
+    if (isNaN(bountyStakeAmount) || bountyStakeAmount <= 0) { return; }
     // Show transaction submitted message
     setBountyStakingTxnState(TxnStates.SUBMITTED);
     // Contribute via Web3
