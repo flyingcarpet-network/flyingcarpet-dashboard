@@ -392,9 +392,9 @@ class BountyMap extends React.Component<IProps> {
 
     switch (String(bountyFilter)) {
       case String(BountyFilter.INACTIVE):
-        return (bountyBalance < stakingPoolSize);
+        return (Number(bountyBalance) < Number(stakingPoolSize));
       case String(BountyFilter.ACTIVE):
-        return (bountyBalance >= stakingPoolSize);
+        return (Number(bountyBalance) >= Number(stakingPoolSize));
       default:
         return true; // By default (including ALL case), we show all bounties on the map
     }
