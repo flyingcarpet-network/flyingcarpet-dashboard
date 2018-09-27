@@ -99,7 +99,7 @@ const polygonSelectionStyles = [
         "line-join": "round"
       },
       "paint": {
-        "line-color": "#D20C0C",
+        "line-color": "#00bcd4",
         "line-dasharray": [0.2, 2],
         "line-width": 2
       }
@@ -110,8 +110,8 @@ const polygonSelectionStyles = [
     "type": "fill",
     "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
     "paint": {
-      "fill-color": "#D20C0C",
-      "fill-outline-color": "#D20C0C",
+      "fill-color": "#00bcd4",
+      "fill-outline-color": "#00bcd4",
       "fill-opacity": 0.1
     }
   },
@@ -126,7 +126,7 @@ const polygonSelectionStyles = [
       "line-join": "round"
     },
     "paint": {
-      "line-color": "#D20C0C",
+      "line-color": "#00bcd4",
       "line-dasharray": [0.2, 2],
       "line-width": 2
     }
@@ -148,7 +148,7 @@ const polygonSelectionStyles = [
     "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
     "paint": {
       "circle-radius": 3,
-      "circle-color": "#D20C0C",
+      "circle-color": "#00bcd4",
     }
   },
 
@@ -289,20 +289,26 @@ class BountyMap extends React.Component<IProps> {
                   }
                 </div>
                 <div>
-                  {(mapZoom >= 11) && bounties.map((bounty: any, index: number) => {
-                    // Filter bounties by bounty filters (active/inactive/complete)
-                    if (this.filterBounty(bounty.balance)) {
-                      return (
-                        <Layer key={index} type="fill" paint={{'fill-color': "#ff0000",'fill-opacity': 0.3}}>
+                  {(mapZoom >= 11) && bounties.map((bounty: any, index: number) => (
+                    <div>
+                      {(this.filterBounty(bounty.balance) && this.checkBountyStatus(bounty.balance, BountyFilter.INACTIVE)) &&
+                        <Layer key={index} type="fill" paint={{'fill-color': "#00bcd4",'fill-opacity': 0.3}}>
                           <Feature
                             coordinates={[bounty.coordinates.map(item => [item.lat, item.lon])]}
                             onClick={this.markerClick.bind(this, bounty)}
                           />
                         </Layer>
-                      );
-                    }
-                    return;
-                  })}
+                      }
+                      {(this.filterBounty(bounty.balance) && this.checkBountyStatus(bounty.balance, BountyFilter.ACTIVE)) &&
+                        <Layer key={index} type="fill" paint={{'fill-color': "#4caf50",'fill-opacity': 0.3}}>
+                          <Feature
+                            coordinates={[bounty.coordinates.map(item => [item.lat, item.lon])]}
+                            onClick={this.markerClick.bind(this, bounty)}
+                          />
+                        </Layer>
+                      }
+                    </div>
+                  ))}
                   {(mapZoom >= 9 && mapZoom < 11) && bounties.map((bounty: any, index: number) => {
                     // Filter bounties by bounty filters (active/inactive/complete)
                     if (this.filterBounty(bounty.balance)) {
@@ -513,6 +519,21 @@ class BountyMap extends React.Component<IProps> {
         return (Number(bountyBalance) >= Number(stakingPoolSize));
       default:
         return true; // By default (including ALL case), we show all bounties on the map
+    }
+  }
+  /*
+   * This function is used to check if a bounty agrees with a particular status
+   */
+  private checkBountyStatus = (bountyBalance: number, statusType: BountyFilter): boolean => {
+    const { stakingPoolSize } = this.props;
+
+    switch (String(statusType)) {
+      case String(BountyFilter.INACTIVE):
+        return (Number(bountyBalance) < Number(stakingPoolSize));
+      case String(BountyFilter.ACTIVE):
+        return (Number(bountyBalance) >= Number(stakingPoolSize));
+      default:
+        return true; // By default (including ALL case)
     }
   }
 }
