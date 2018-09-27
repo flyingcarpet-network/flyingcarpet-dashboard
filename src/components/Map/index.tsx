@@ -246,6 +246,7 @@ class BountyMap extends React.Component<IProps> {
             <div className="col-sm-9 col-md-9 col-lg-10" />
             <div className="col-sm-2 col-md-2 col-lg-1" style={{zIndex: 90}}>
               <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonSelectionDone}>Done</button>
+              <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonDeletionDone}>Clear</button>
             </div>
             <div className="col-sm-1 col-md-1 col-lg-1" />
           </div>
@@ -360,6 +361,12 @@ class BountyMap extends React.Component<IProps> {
       // Switch back to polygon draw mode since an error occured
       this.drawControl.draw.changeMode('draw_polygon');
     }
+  }
+  private polygonDeletionDone = () => {
+    // Delete all selections
+    this.drawControl.draw.deleteAll();
+    // Switch to polygon draw mode
+    this.drawControl.draw.changeMode('draw_polygon');
   }
   private onZoom = (map) => {
     const { setMapZoom } = this.props;
