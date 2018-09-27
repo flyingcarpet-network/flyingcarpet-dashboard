@@ -5,6 +5,7 @@
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.0.9",
     "@mapbox/mapbox-sdk": "^0.4.1",
+    "@turf/turf": "^5.1.6",
     "aphrodite": "^2.2.3",
     "geolib": "^2.0.24",
     "history": "^4.7.2",
