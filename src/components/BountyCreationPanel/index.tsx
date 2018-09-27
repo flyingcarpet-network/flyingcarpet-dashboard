@@ -9,6 +9,7 @@ import * as tcroActions from '../../actions/tcroActions';
 import { TxnStates } from '../../reducers/dataTypeEnums';
 import * as Web3Utils from '../../utils/web3-utils';
 import Form from './Form';
+const geolib = require('geolib');
 
 export interface IProps {
   web3: any;
@@ -159,7 +160,11 @@ class BountyCreationPanel extends React.Component<IProps> {
     // Validate that a geohash string is being submitted, otherwise provide an error to the user
     if (!values.geohashes || values.geohashes.length === 0) {
       throw new SubmissionError({ _error: 'Please select a location for your bounty on the map.' });
-      return;
+    }
+
+    // Check that the perimeter of the polygon does not exceed 10km
+    if (geolib.getPathLength(mapSelectedPolygonPoints) > 10 * 1000) {
+      throw new SubmissionError({ _error: 'The perimeter of your bounty selection may not exceed 10km.' });
     }
 
     // Show transaction processing
