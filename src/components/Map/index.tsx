@@ -12,6 +12,8 @@ import { MAPBOX_ACCESS_TOKEN } from '../../constants';
 import { BountyFilter, TxnStates } from '../../reducers/dataTypeEnums';
 import * as Web3Utils from '../../utils/web3-utils';
 import ContributionModal from './../ContributionModal';
+const turf = require('@turf/turf');
+const geolib = require('geolib');
 
 const Map = ReactMapboxGl({
   accessToken: MAPBOX_ACCESS_TOKEN
@@ -258,16 +260,17 @@ class BountyMap extends React.Component<IProps> {
                 containerStyle={styles.map}
                 style={mapStyle}
                 zoom={zoom}
-                onClick={this.recordMapClick}
+                onClick={this.mapClick}
                 onZoom={this.onZoom}
               >
                 <DrawControl
-                  position='bottom-right'
                   displayControlsDefault={false}
                   defaultMode='draw_polygon'
                   ref={(drawControl) => { this.drawControl = drawControl; }}
                   styles={polygonSelectionStyles}
-                  onCombineFeatures={console.log}
+                  onDrawSelectionChange={this.updatePolygonPointsInRedux}
+                  onDrawDelete={this.updatePolygonPointsInRedux}
+                  onDrawUpdate={this.updatePolygonPointsInRedux}
                 />
                 <div>
                   {(Object.keys(openPopupBountyData).length > 0) &&
@@ -367,17 +370,26 @@ class BountyMap extends React.Component<IProps> {
     this.drawControl.draw.deleteAll();
     // Switch to polygon draw mode
     this.drawControl.draw.changeMode('draw_polygon');
+    // Update redux to reflect deletion of polygon
+    this.updatePolygonPointsInRedux();
   }
   private onZoom = (map) => {
     const { setMapZoom } = this.props;
 
     setMapZoom(map.getZoom());
   }
-  private recordMapClick = (_, data) => {
-    const { setMapPolygonPoints, setOpenPopupBountyData } = this.props;
+  private mapClick = () => {
+    const { setOpenPopupBountyData } = this.props;
 
     // Close popup window (due to click anywhere on map)
     setOpenPopupBountyData({});
+  }
+  /* 
+   * When this function is called, the points making up the currently drawn polygon are
+   * stored in Redux.
+   */
+  private updatePolygonPointsInRedux = () => {
+    const { setMapPolygonPoints } = this.props;
 
     // Get all features
     const selectionFeatures = this.drawControl.draw.getAll().features;
@@ -395,6 +407,7 @@ class BountyMap extends React.Component<IProps> {
     if (!selectionFeatures || selectionFeatures.length === 0 ||
         !selectionFeatures[0].geometry || !selectionFeatures[0].geometry.coordinates ||
         selectionFeatures[0].geometry.coordinates.length === 0) { return; }
+
     // Get the coordinates for the one polygon
     const pointCoordinates = selectionFeatures[0].geometry.coordinates[0];
 
@@ -414,6 +427,74 @@ class BountyMap extends React.Component<IProps> {
 
     // Display info window
     setOpenPopupBountyData(bounty);
+
+    /* 
+     * Now we need to prevent the addition of new polygon drawn points inside of features/markers on the map.
+     * Sadly, mapbox-gl-draw does not natively support any functionality for removing the most recently added
+     * point from the drawn polygon; thus, we must implement this functionality below.
+     */
+
+    /* To do this, we first need to get the coordinates of the polygon that is currently being drawn */
+
+    // Get all features
+    const selectionFeatures = this.drawControl.draw.getAll().features;
+
+    // If no polygons exist then do nothing
+    if (!selectionFeatures || selectionFeatures.length === 0 ||
+        !selectionFeatures[0].geometry || !selectionFeatures[0].geometry.coordinates ||
+        selectionFeatures[0].geometry.coordinates.length === 0) { return; }
+
+    // Get the coordinates for the one polygon
+    const pointCoordinates = selectionFeatures[0].geometry.coordinates[0];
+
+    // Remove duplicates (duplicate coordinates are often output)
+    const uniquePointsCoordinates = this.removeCoordinateDuplicates(pointCoordinates);
+
+    // Get the newest added coordinate (last one)
+    let newlyAddedCoordinate = uniquePointsCoordinates[uniquePointsCoordinates.length - 1];
+    newlyAddedCoordinate = {
+      latitude: newlyAddedCoordinate[0],
+      longitude: newlyAddedCoordinate[1]
+    };
+
+    /* Now, get the coordinates of the newly added point to the polygon being drawn (last coordinate is the newest) */
+
+    // Get the coordinates of the bounty (features/marker) that has been clicked
+    const clickBountyCoordinates = bounty.coordinates.map(elem => ({latitude: elem.lat, longitude: elem.lon}));
+
+    /* Finally, check if the newly added coordinate is contained within the clicked features/marker */
+    if (geolib.isPointInside(newlyAddedCoordinate, clickBountyCoordinates)) {
+      // Since the newly added drawn polygon point is inside existing features/marker we need to prevent/remove it
+      const pointToRemove = uniquePointsCoordinates[uniquePointsCoordinates.length - 1]; // Element to be removed
+
+      // Create a new array excluding the newly added point (pointToRemove)
+      const updatedUniqueCoordinates = uniquePointsCoordinates.filter(elem => (elem[0] !== pointToRemove[0] || elem[1] !== pointToRemove[1]));
+      
+      let line;
+      let polygonArr;
+      // We only bother updating the polygon (to exclude the newly added point) if it will now have at least
+      // three points, since MapBox draw doesn't allow a polygon to be set with less than three (obviously
+      // since that would be a line)
+      if (updatedUniqueCoordinates.length >= 3) {
+        // Create line (for generating a polygon using turfjs)
+        line = turf.lineString(updatedUniqueCoordinates);
+        // Generate the polygon from the line
+        polygonArr = [turf.lineToPolygon(line)];
+      } else {
+        // Empty polygon since we don't have enough points for a polygon (less than three)
+        polygonArr = [];
+      }
+
+      // Update the drawn polygon on the map (to now exclude the new point)
+      this.drawControl.draw.set({
+        type: 'FeatureCollection',
+        features: polygonArr
+      });
+
+      // Update redux to reflect this change in the drawn polygon (since mapbox-gl-draw events don't fire
+      // after programatic changes to the drawn polygon).
+      this.updatePolygonPointsInRedux();
+    }
   }
   private openStakingDialog = (bounty: any) => {
     const { toggleStakingDialog, setSelectedBountyToStake, stakingPoolSize, setOpenPopupBountyData } = this.props;

@@ -144,7 +144,9 @@ class BountyCreationPanel extends React.Component<IProps> {
       }
 
       return mapSelectedPolygonPoints.forEach((item: number[], index) => {
-        coordinateStringsArray.push('(' + item[0] + ', ' + item[1] + ')');
+        if (item && item.length === 2) {
+          coordinateStringsArray.push('(' + item[0] + ', ' + item[1] + ')');
+        }
         if (index === mapSelectedPolygonPoints.length - 1) {
           return resolve(coordinateStringsArray);
         }
