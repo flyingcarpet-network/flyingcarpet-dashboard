@@ -31,7 +31,7 @@ class MapPopup extends React.Component<IProps> {
           <div><b>Funding:</b> {openPopupBountyData.balance} / {stakingPoolSize} NTN</div>
           <div><b>Bounty ID:</b> {openPopupBountyData.bountyID}</div>
           <div><b>Center Coordinate:</b> {openPopupBountyData.center.latitude}, {openPopupBountyData.center.longitude}</div>
-          <div className="form-group"><b>All Vertex Coordinates:</b> {openPopupBountyData.coordinates.map(coord => ("(" + coord.lat + ", " + coord.lon + ")")).join(', ')}</div>
+          <div className={(Number(openPopupBountyData.balance) < Number(stakingPoolSize)) ? "form-group" : ""}><b>All Vertex Coordinates:</b> {openPopupBountyData.coordinates.map(coord => ("(" + coord.lat + ", " + coord.lon + ")")).join(', ')}</div>
           {(Number(openPopupBountyData.balance) < Number(stakingPoolSize)) &&
             <button onClick={this.openStakingDialog} className="jr-btn jr-btn-secondary text-uppercase btn-block btn btn-default">
               Stake NTN to Support Bounty
