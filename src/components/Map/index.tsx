@@ -242,6 +242,13 @@ class BountyMap extends React.Component<IProps> {
 
     return (
       <div>
+          <div className="row" style={{position: 'absolute', left: 0, right: 0}}>
+            <div className="col-sm-9 col-md-9 col-lg-10" />
+            <div className="col-sm-2 col-md-2 col-lg-1" style={{zIndex: 90}}>
+              <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonSelectionDone}>Done</button>
+            </div>
+            <div className="col-sm-1 col-md-1 col-lg-1" />
+          </div>
           <ContributionModal />
           <div className="d-flex justify-content-center">
             <div className="row">
@@ -255,10 +262,11 @@ class BountyMap extends React.Component<IProps> {
               >
                 <DrawControl
                   position='bottom-right'
-                  controls={{point: false, line_string: false, polygon: true, trash: true, combine_features: false, uncombine_features: false}}
+                  displayControlsDefault={false}
                   defaultMode='draw_polygon'
                   ref={(drawControl) => { this.drawControl = drawControl; }}
                   styles={polygonSelectionStyles}
+                  onCombineFeatures={console.log}
                 />
                 <div>
                   {(Object.keys(openPopupBountyData).length > 0) &&
@@ -329,6 +337,30 @@ class BountyMap extends React.Component<IProps> {
       </div>
     )
   }
+  private polygonSelectionDone = () => {
+    // Get all features
+    const selectionFeatures = this.drawControl.draw.getAll().features;
+    // Check that there is at least one selection that contains a coordinates array
+    if (!selectionFeatures || selectionFeatures.length === 0 ||
+        !selectionFeatures[0].id || !selectionFeatures[0].geometry ||
+        !selectionFeatures[0].geometry.coordinates || selectionFeatures[0].geometry.coordinates.length === 0) { return; }
+
+    // Get the coordinates for the one polygon
+    const pointCoordinates = selectionFeatures[0].geometry.coordinates[0];
+
+    // Remove duplicates (duplicate coordinates are often output)
+    const uniquePointsCoordinates = this.removeCoordinateDuplicates(pointCoordinates);
+
+    // Check that there is at least three unique coordinate points
+    if (!uniquePointsCoordinates || uniquePointsCoordinates.length <= 2) { return; }
+    // Switch to direct selection mode (and include id of the one polygon selection)
+    try {
+      this.drawControl.draw.changeMode('direct_select', { featureId: selectionFeatures[0].id });
+    } catch (_) {
+      // Switch back to polygon draw mode since an error occured
+      this.drawControl.draw.changeMode('draw_polygon');
+    }
+  }
   private onZoom = (map) => {
     const { setMapZoom } = this.props;
 
@@ -360,11 +392,15 @@ class BountyMap extends React.Component<IProps> {
     const pointCoordinates = selectionFeatures[0].geometry.coordinates[0];
 
     // Remove duplicates (duplicate coordinates are often output)
-    const uniquePointsCoordinatesSet  = new Set(pointCoordinates.map(JSON.stringify));
-    const uniquePointsCoordinates = Array.from(uniquePointsCoordinatesSet).map(JSON.parse as any);
+    const uniquePointsCoordinates = this.removeCoordinateDuplicates(pointCoordinates);
 
     // Save coordinates to Redux
     setMapPolygonPoints(uniquePointsCoordinates);
+  }
+  private removeCoordinateDuplicates(pointCoordinates) {
+    // Remove duplicates (duplicate coordinates are often output)
+    const uniquePointsCoordinatesSet  = new Set(pointCoordinates.map(JSON.stringify));
+    return Array.from(uniquePointsCoordinatesSet).map(JSON.parse as any);
   }
   private markerClick = (bounty: any) => {
     const { setOpenPopupBountyData } = this.props;
