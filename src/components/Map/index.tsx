@@ -1,17 +1,17 @@
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import * as React from 'react';
-import ReactMapboxGl, { Feature, Layer, Marker, Popup } from 'react-mapbox-gl';
+import ReactMapboxGl, { Feature, Layer, Marker, } from 'react-mapbox-gl';
 import DrawControl from 'react-mapbox-gl-draw';
 import { connect } from 'react-redux';
 import { withWeb3 } from 'react-web3-provider';
 import { bindActionCreators, compose } from 'redux';
 import * as mapActions from '../../actions/mapActions';
-import * as modalsActions from '../../actions/modalsActions';
 import * as tcroActions from '../../actions/tcroActions';
 import { MAPBOX_ACCESS_TOKEN } from '../../constants';
 import { BountyFilter, TxnStates } from '../../reducers/dataTypeEnums';
 import * as Web3Utils from '../../utils/web3-utils';
 import ContributionModal from './../ContributionModal';
+import MapPopup from './../MapPopup';
 const turf = require('@turf/turf');
 const geolib = require('geolib');
 
@@ -39,8 +39,6 @@ export interface IProps {
   bounties: [any];
   setBounties: () => any;
   setMapPolygonPoints: (location: any) => any;
-  toggleStakingDialog: () => any;
-  setSelectedBountyToStake: (bountyID: number) => any;
   setStakingPoolSize: (size: number) => any;
   stakingPoolSize: number;
   bountyFilter: BountyFilter;
@@ -242,13 +240,21 @@ class BountyMap extends React.Component<IProps> {
       });
     }
 
+    const anyDrawnPoints = this.anyDrawnPoints();
+    console.log(anyDrawnPoints);
+
     return (
       <div>
           <div className="row" style={{position: 'absolute', left: 0, right: 0}}>
             <div className="col-sm-9 col-md-9 col-lg-10" />
             <div className="col-sm-2 col-md-2 col-lg-1" style={{zIndex: 90}}>
-              <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonSelectionDone}>Done</button>
-              <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonDeletionDone}>Clear</button>
+              {anyDrawnPoints && 
+                <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonSelectionDone}>Done</button>
+              }
+              <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonDeletionDone}>
+                {anyDrawnPoints && 'Clear'}
+                {(!anyDrawnPoints) && 'Start Select'}
+              </button>
             </div>
             <div className="col-sm-1 col-md-1 col-lg-1" />
           </div>
@@ -274,20 +280,7 @@ class BountyMap extends React.Component<IProps> {
                 />
                 <div>
                   {(Object.keys(openPopupBountyData).length > 0) &&
-                    <Popup
-                      coordinates={[openPopupBountyData.center.latitude, openPopupBountyData.center.longitude]}
-                      style={{color: 'black', maxWidth: 400, wordWrap: 'break-word'}}
-                    >
-                      <h2>{openPopupBountyData.title}</h2>
-                      <p>{openPopupBountyData.description}<br />
-                      Geo Hashes: {openPopupBountyData.geohashes}<br />
-                      Bounty ID: {openPopupBountyData.bountyID}<br />
-                      Funding: {openPopupBountyData.balance} / {stakingPoolSize} NTN<br />
-                      Status: {(Number(openPopupBountyData.balance) < Number(stakingPoolSize)) ? 'Inactive' : 'Active'}</p>
-                      {(Number(openPopupBountyData.balance) < Number(stakingPoolSize)) &&
-                        <p><button onClick={this.openStakingDialog.bind(this, openPopupBountyData)}>- Stake to Support Bounty -</button></p>
-                      }
-                    </Popup>
+                    <MapPopup />
                   }
                 </div>
                 <div>
@@ -340,6 +333,17 @@ class BountyMap extends React.Component<IProps> {
         </div>
       </div>
     )
+  }
+  private anyDrawnPoints = () => {
+    if (!this.drawControl || !this.drawControl.draw) { return false; }
+
+    const all = this.drawControl.draw.getAll();
+
+    if (!all || !all.features || all.features.length === 0 ||
+        !all.features[0].geometry || !all.features[0].geometry.coordinates ||
+        all.features[0].geometry.coordinates.length === 0) { return false; }
+
+    return (all.features[0].geometry.coordinates[0].length > 0);
   }
   private polygonSelectionDone = () => {
     // Get all features
@@ -496,18 +500,6 @@ class BountyMap extends React.Component<IProps> {
       this.updatePolygonPointsInRedux();
     }
   }
-  private openStakingDialog = (bounty: any) => {
-    const { toggleStakingDialog, setSelectedBountyToStake, stakingPoolSize, setOpenPopupBountyData } = this.props;
-
-    // Only allow staking dialog to be opened if clicked an inactive (unfunded bounty)
-    if (Number(bounty.balance) < Number(stakingPoolSize)) {
-      toggleStakingDialog(); // Open staking modal
-      setSelectedBountyToStake(bounty.bountyID); // Set bounty ID of currently clicked bounty
-    }
-
-    // Close info window
-    setOpenPopupBountyData({});
-  }
   /*
    * This function is used to filter bounties on the map based on the filter selected by the user
    */
@@ -539,8 +531,6 @@ export default compose<any>(
     dispatch => ({
       setBounties: bindActionCreators(tcroActions.setBounties, dispatch),
       setMapPolygonPoints: bindActionCreators(mapActions.setMapPolygonPoints, dispatch),
-      toggleStakingDialog: bindActionCreators(modalsActions.toggleStakingDialog, dispatch),
-      setSelectedBountyToStake: bindActionCreators(mapActions.setSelectedBountyToStake, dispatch),
       setStakingPoolSize: bindActionCreators(tcroActions.setStakingPoolSize, dispatch),
       setMapZoom: bindActionCreators(mapActions.setMapZoom, dispatch),
       setOpenPopupBountyData: bindActionCreators(mapActions.setOpenPopupBountyData, dispatch)

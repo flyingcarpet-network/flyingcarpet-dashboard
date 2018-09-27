@@ -154,7 +154,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     });
   }
   private formSubmit = values => {
-    const { web3, setBountySubmissionTxnState, setBounties, setLastSuccessfulBountyTxnHash } = this.props;
+    const { web3, setBountySubmissionTxnState, setBounties, setLastSuccessfulBountyTxnHash, mapSelectedPolygonPoints } = this.props;
 
     // Validate that a geohash string is being submitted, otherwise provide an error to the user
     if (!values.geohashes || values.geohashes.length === 0) {
@@ -165,7 +165,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     // Show transaction processing
     setBountySubmissionTxnState(TxnStates.SUBMITTED);
     // Submit bounty via Web3
-    return Web3Utils.submitBounty(web3, values).then(res => {
+    return Web3Utils.submitBounty(web3, values, mapSelectedPolygonPoints).then(res => {
       // Show sucess message
       setBountySubmissionTxnState(TxnStates.PENDING);
       // Switch back to creation dialog in 10 seconds
