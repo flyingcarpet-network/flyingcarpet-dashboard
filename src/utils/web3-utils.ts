@@ -154,8 +154,10 @@ export function contributeToBounty(web3: any, bountyID: number, amountToken: num
  * @param web3                Web from Web3Provider injected by Ethereum-enabled browser.
  * @param formValues          A data object used to create the bounty. This data must obey the
  *                            schema detailed here: https://github.com/flyingcarpet-network/Flyingcarpet-TCR/tree/feature/Update-README-for-TCRO#registry-contract-functions
+ * @param coordinatePoints    An array of coordinates for each vertex of the selected polygon (not geohashes).
+ *                            Used for the sole purpose of generating a human-readable bounty description.
  */
-export function submitBounty(web3, formValues) {
+export function submitBounty(web3, formValues, coordinatePoints) {
   return new Promise((resolve, reject) => {
     const registryContractAddress = contractAddresses.Registry;
     const registryContract = new web3.eth.Contract(RegistryJSON.abi, registryContractAddress);
@@ -166,10 +168,13 @@ export function submitBounty(web3, formValues) {
 
     // TODO: Add extensive data validation of form values.
 
+    // Get the center coordinate
+    const centerCoord = geolib.getCenter(coordinatePoints);
+
     const bountyObject = {
       "payload": {
-        "title":  "Data collection using a " + capitalize(collectionType) + " for " + capitalize(useType) + " @  " + JSON.stringify(geohashes) + " (geohashes)",
-        "description": "This is a request for aerial land data collection using a satellite. ...",
+        "title":  capitalize(collectionType) + " data collection " + " for " + capitalize(useType) + " @ " + centerCoord.latitude + ", " + centerCoord.longitude,
+        "description": "This is a request for aerial data collection using a " + collectionType + ". The type of the collection area is " + useType + ". Please see the details for more information about the requirements.",
         "issuer": [
           {"address": registryContractAddress}
         ],
