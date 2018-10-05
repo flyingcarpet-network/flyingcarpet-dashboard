@@ -241,7 +241,6 @@ class BountyMap extends React.Component<IProps> {
     }
 
     const anyDrawnPoints = this.anyDrawnPoints();
-    console.log(anyDrawnPoints);
 
     return (
       <div>
@@ -290,9 +289,9 @@ class BountyMap extends React.Component<IProps> {
                 </div>
                 <div>
                   {(mapZoom >= 11) && bounties.map((bounty: any, index: number) => (
-                    <div>
+                    <div key={index}>
                       {(this.filterBounty(bounty.balance) && this.checkBountyStatus(bounty.balance, BountyFilter.INACTIVE)) &&
-                        <Layer key={index} type="fill" paint={{'fill-color': "#00bcd4",'fill-opacity': 0.3}}>
+                        <Layer type="fill" paint={{'fill-color': "#00bcd4",'fill-opacity': 0.3}}>
                           <Feature
                             coordinates={[bounty.coordinates.map(item => [item.lat, item.lon])]}
                             onClick={this.markerClick.bind(this, bounty)}
@@ -300,7 +299,7 @@ class BountyMap extends React.Component<IProps> {
                         </Layer>
                       }
                       {(this.filterBounty(bounty.balance) && this.checkBountyStatus(bounty.balance, BountyFilter.ACTIVE)) &&
-                        <Layer key={index} type="fill" paint={{'fill-color': "#4caf50",'fill-opacity': 0.3}}>
+                        <Layer type="fill" paint={{'fill-color': "#4caf50",'fill-opacity': 0.3}}>
                           <Feature
                             coordinates={[bounty.coordinates.map(item => [item.lat, item.lon])]}
                             onClick={this.markerClick.bind(this, bounty)}
