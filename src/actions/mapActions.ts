@@ -29,7 +29,7 @@ export const setBountyStakeAmount = (bountyStakeAmount: number) => (
   }
 );
 
-export const setSelectedBountyToStake = (selectedBountyToStake: number) => (
+export const setSelectedBountyToStake = (selectedBountyToStake: any) => (
   {
     selectedBountyToStake,
     type: types.SET_SELECTED_BOUNTY_TO_STAKE

@@ -9,7 +9,7 @@ const INITIAL_STATE = {
   mapSelectedPolygonPoints: [], // An array of lat/lon coordinates for the last location the user clicked on the map
   // For bounty contribution dialog modal
   bountyStakeAmount: 0, // The amount of NTN token to stake
-  selectedBountyToStake: 0, // The ID of the selected bounty (when the staking modal is opened)
+  selectedBountyToStake: {}, // The object (data) of the selected bounty (when the staking modal is opened)
   // TODO: These two flags (below) should be abstracted into their own reducers
   bountyStakingTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been staked
   bountyFilter: BountyFilter.ALL,
