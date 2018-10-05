@@ -25,7 +25,7 @@ class Main extends React.Component {
             </div>
             <main className="app-main-content-wrapper">
               <div className="app-main-content">
-                  <BountyStatusFilter />
+                <BountyStatusFilter />
                 <div className="app-wrapper">
                   <div className="row">
                       <BountyCreationPanel />

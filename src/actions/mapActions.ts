@@ -77,3 +77,10 @@ export const setOpenPopupBountyData = (openPopupBountyData: any) => (
     type: types.SET_OPEN_POPUP_BOUNTY_DATA
   }
 );
+
+export const setIsBountyCreationPanelOpen = (isBountyCreationPanelOpen: any) => (
+  {
+    isBountyCreationPanelOpen,
+    type: types.SET_IS_BOUNTY_CREATION_PANEL_OPEN
+  }
+);

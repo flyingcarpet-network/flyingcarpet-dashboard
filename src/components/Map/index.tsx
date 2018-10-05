@@ -244,22 +244,26 @@ class BountyMap extends React.Component<IProps> {
 
     return (
       <div>
-          <div className="row" style={{position: 'absolute', left: 0, right: 0}}>
+          <div className="row ml-0 mr-0 ml-sm-auto mr-sm-auto" style={{position: 'absolute', left: 0, right: 0}}>
             <div className="col-sm-9 col-md-9 col-lg-10" />
-            <div className="col-sm-2 col-md-2 col-lg-1" style={{zIndex: 90}}>
+            <div className="row justify-content-center col-sm-2 col-md-2 col-lg-1 ml-0 mr-0 ml-sm-2 mr-sm-1" style={{zIndex: 90}}>
               {anyDrawnPoints && 
-                <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonSelectionDone}>Done</button>
+                <div className="col-6 col-sm-12 pl-1 pl-sm-0 pr-sm-0">
+                  <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonSelectionDone}>Done</button>
+                </div>
               }
-              <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonDeletionDone}>
-                {anyDrawnPoints && 'Clear'}
-                {(!anyDrawnPoints) && 'Start Select'}
-              </button>
+              <div className="col-6 col-sm-12 pr-1 pl-sm-0 pr-sm-0">
+                <button className="jr-btn jr-btn-xs btn-secondary col-sm-12 col-md-12 col-lg-12" onClick={this.polygonDeletionDone}>
+                  {anyDrawnPoints && 'Clear'}
+                  {(!anyDrawnPoints) && 'Start Select'}
+                </button>
+              </div>
             </div>
             <div className="col-sm-1 col-md-1 col-lg-1" />
           </div>
           <ContributionModal />
           <div className="d-flex justify-content-center">
-            <div className="row">
+            <div className="row fixed-top fixed-bottom" style={{zIndex: 1}}>
               <Map
                 center={center}
                 containerStyle={styles.map}

@@ -1,24 +1,35 @@
 import * as React from 'react';
+import { isMobile } from 'react-device-detect';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { Field, reduxForm } from 'redux-form';
-
+import * as mapActions from '../../actions/mapActions';
 
 export interface IProps {
   handleSubmit: () => any;
   formData: any;
   error: any;
+  isBountyCreationPanelOpen: boolean;
+  setIsBountyCreationPanelOpen: (isOpen: boolean) => any;
 }
 
 class Form extends React.Component<IProps> {
+  public componentDidMount = () => {
+    if (isMobile) {
+      const { setIsBountyCreationPanelOpen } = this.props;
+
+      // If the dashboard is being opened on a mobile device, then initially hide the bounty creation panel
+      setIsBountyCreationPanelOpen(false);
+    }
+  }
   public render() {
-    const { handleSubmit, formData, error } = this.props;
+    const { handleSubmit, formData, error, isBountyCreationPanelOpen } = this.props;
 
     return (
       <div>
         <div className="card">
-         <div className="card-header">Register new bounty</div>
-         <div className="card-body">
+         <div className="card-header" onClick={this.toggleBountyCreationPanel} style={{cursor: "pointer"}}>Register New Opportunity</div>
+         <div className={"card-body" + ((!isBountyCreationPanelOpen) ? " d-none" : "")}>
            <h3 className="card-title">Description</h3>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
@@ -103,14 +114,22 @@ class Form extends React.Component<IProps> {
       </div>
     )
   }
+  private toggleBountyCreationPanel = () => {
+    const { isBountyCreationPanelOpen, setIsBountyCreationPanelOpen } = this.props;
+
+    setIsBountyCreationPanelOpen(!isBountyCreationPanelOpen);
+  }
 }
 
 export default compose<any>(
   connect(
     state => ({
-      formData: state.form.bountyCreationPanel
+      formData: state.form.bountyCreationPanel,
+      isBountyCreationPanelOpen: state.map.isBountyCreationPanelOpen
     }),
-    null
+    dispatch => ({
+      setIsBountyCreationPanelOpen: bindActionCreators(mapActions.setIsBountyCreationPanelOpen, dispatch)
+    })
   ),
   reduxForm({
     form: 'bountyCreationPanel'

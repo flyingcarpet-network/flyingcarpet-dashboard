@@ -12,11 +12,14 @@ const INITIAL_STATE = {
   selectedBountyToStake: 0, // The ID of the selected bounty (when the staking modal is opened)
   // TODO: These two flags (below) should be abstracted into their own reducers
   bountyStakingTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been staked
-  bountySubmissionTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been added
-  lastSuccessfulBountyTxnHash: '', // The hash of the last bounty successfully added
   bountyFilter: BountyFilter.ALL,
   mapZoom: 11, // Level of zoom on the map
-  openPopupBountyData: {} // Object of data associated with the clicked map popup window
+  openPopupBountyData: {}, // Object of data associated with the clicked map popup window
+  /* TODO: Consider moving these last three field into their own reducer (as they pertain
+           to the BountyCreationPanel which primarly uses the Redux Form reducer) */
+  bountySubmissionTxnState: TxnStates.DEFAULT, // Set to DEFAULT before a bounty has just been added
+  lastSuccessfulBountyTxnHash: '', // The hash of the last bounty successfully added
+  isBountyCreationPanelOpen: true // Defines whether the BountyCreationPanel is currently open
 };
 
 export default function models(state = INITIAL_STATE, action) {
@@ -75,6 +78,11 @@ export default function models(state = INITIAL_STATE, action) {
       return {
         ...state,
         openPopupBountyData: action.openPopupBountyData
+      };
+    case types.SET_IS_BOUNTY_CREATION_PANEL_OPEN:
+      return {
+        ...state,
+        isBountyCreationPanelOpen: action.isBountyCreationPanelOpen
       };
     default:
       return state;
