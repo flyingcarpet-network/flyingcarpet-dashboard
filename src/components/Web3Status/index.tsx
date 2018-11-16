@@ -31,9 +31,9 @@ class Header extends React.Component<IProps> {
   private determineWeb3StatusMessage() {
     const { web3State, isAnyUnlockedAccount } = this.props;
 
-    const noWeb3Failure = 'Please use MetaMask';
-    const noUnlockedAccountFailure = 'Please unlock your MetaMask account';
-    const success = 'Connected to MetaMask';
+    const noWeb3Failure = 'Install MetaMask';
+    const noUnlockedAccountFailure = 'Unlock MetaMask';
+    const success = 'MetaMask Connected';
 
     if (!web3State.isConnected || web3State.error) { return noWeb3Failure; }
 

@@ -8,7 +8,7 @@ import './MapPopup.css';
 
 export interface IProps {
   toggleStakingDialog: () => any;
-  setSelectedBountyToStake: (bountyID: number) => any;
+  setSelectedBountyToStake: (bounty: any) => any;
   stakingPoolSize: number;
   setOpenPopupBountyData: (data: any) => any;
   openPopupBountyData: any;
@@ -47,7 +47,7 @@ class MapPopup extends React.Component<IProps> {
     // Only allow staking dialog to be opened if clicked an inactive (unfunded bounty)
     if (Number(openPopupBountyData.balance) < Number(stakingPoolSize)) {
       toggleStakingDialog(); // Open staking modal
-      setSelectedBountyToStake(openPopupBountyData.bountyID); // Set bounty ID of currently clicked bounty
+      setSelectedBountyToStake(openPopupBountyData); // Set bounty ID of currently clicked bounty
     }
 
     // Close info window

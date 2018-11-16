@@ -29,7 +29,7 @@ export const setBountyStakeAmount = (bountyStakeAmount: number) => (
   }
 );
 
-export const setSelectedBountyToStake = (selectedBountyToStake: number) => (
+export const setSelectedBountyToStake = (selectedBountyToStake: any) => (
   {
     selectedBountyToStake,
     type: types.SET_SELECTED_BOUNTY_TO_STAKE
@@ -75,5 +75,12 @@ export const setOpenPopupBountyData = (openPopupBountyData: any) => (
   {
     openPopupBountyData,
     type: types.SET_OPEN_POPUP_BOUNTY_DATA
+  }
+);
+
+export const setIsBountyCreationPanelOpen = (isBountyCreationPanelOpen: any) => (
+  {
+    isBountyCreationPanelOpen,
+    type: types.SET_IS_BOUNTY_CREATION_PANEL_OPEN
   }
 );

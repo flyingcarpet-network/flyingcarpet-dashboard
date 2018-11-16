@@ -17,7 +17,7 @@ class BountyCreationPanel extends React.Component<IProps> {
     return (
       <div className="row">
         <div className="col-sm-9 col-md-9 col-lg-10"/>
-        <div className="col-sm-2 col-md-2 col-lg-1" style={{zIndex: 90, marginTop: 14,marginBottom: -17}}>
+        <div className="col-sm-2 col-md-2 col-lg-1 ml-3 mr-3 ml-sm-0 mr-sm-0" style={{zIndex: 90, marginTop: 14,marginBottom: -17}}>
           <select id="lang" className="form-control jr-btn jr-btn-xs jr-btn-primary btn btn-default" onChange={this.selectChange} value={bountyFilter} style={{fontSize: 10}}>
             <option value={BountyFilter.ALL}>Bounties</option>
             <option value={BountyFilter.INACTIVE}>Inactive (unfunded)</option>
